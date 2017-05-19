@@ -13,7 +13,7 @@ returncode,stdout,stderr=command.run(timeout=5)
 
 '''
 
-class Command(object):
+class command(object):
     def __init__(self, command):
         self.command = command
         
@@ -57,27 +57,27 @@ class Command(object):
 
 
 
-class File(object):
+class file(object):
 
 
-    def delete(dir):
+    def delete(dir,error_list):
         try:
             shutil.rmtree(dir)
         except shutil.Error as e:
             message='Directory not copied. Error: %s' %e
-	        error_list.append(message.replace("'",""))
+            error_list.append(message.replace("'",""))
             print(message)
 
 
 
-class Db(object):
+class db(object):
 
     def get_connection(db_user,db_password,db_host,db_database):
         conn = MySQLdb.connect(user=db_user, passwd=db_password, host=db_host,db=db_database)
         return conn
 
 
-class properties:
+class properties(object):
     
     def __init__(self, property_file):
         with open(property_file) as f:
