@@ -68,6 +68,14 @@ class file(object):
             error_list.append(message.replace("'",""))
             print(message)
 
+    def create_processing_dir(directory):
+        
+        try: 
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+        except OSError as err:
+            print("OS error: {0}".format(err))
+
 
 
 class db(object):
