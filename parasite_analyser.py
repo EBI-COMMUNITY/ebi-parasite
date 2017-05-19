@@ -56,6 +56,33 @@ def get_args():
         print "TODO: split the asssemblies and put it in assemblers"
 
 
+def initiate():
+	
+
+def execute_stage1():
+	print "stage 1 has started!"
+
+
+def execute_stage2():
+    print "stage 2 has started!"
+
+def execute_stage3():
+    print "stage 3 has started!"
+
+def execute_stage4():
+    print "stage 4 has started!"
+
+def execute_stage5():
+    print "stage 5 has started!"
+
+def execute_stage6():
+    print "stage 6 has started!"
+
+def execute_stage7():
+    print "stage 7 has started!"
+
+def execute_stage8():
+	print "stage 8 has started!"
 
 
 
@@ -63,6 +90,16 @@ def get_args():
 if __name__ == '__main__':
     
     get_args()
+
+    execute_stage1()
+    execute_stage2()
+    execute_stage3()
+    execute_stage4()
+    execute_stage5()
+    execute_stage6()
+    execute_stage7()
+    execute_stage8()
+
     print assemblers
     print fastq1
     print fastq2
