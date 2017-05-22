@@ -1,4 +1,6 @@
 from os import kill
+import os
+import sys
 from signal import alarm, signal, SIGALRM, SIGKILL
 from subprocess import PIPE, Popen
 
@@ -60,7 +62,7 @@ class command(object):
 class file(object):
 
 
-    def delete(dir,error_list):
+    def delete(self,dir,error_list):
         try:
             shutil.rmtree(dir)
         except shutil.Error as e:
@@ -68,7 +70,7 @@ class file(object):
             error_list.append(message.replace("'",""))
             print(message)
 
-    def create_processing_dir(directory):
+    def create_processing_dir(self,directory):
         
         try: 
             if not os.path.exists(directory):
@@ -183,7 +185,7 @@ class properties(object):
                 
         
         if workdir_provided==False:
-            self.workdir=''
+            self.workdir=os.getcwd()
         if max_core_job_provided==False:
             self.max_core_job=10
         if workdir_input_provided==False:
@@ -229,7 +231,7 @@ class properties(object):
            print "ERROR: biopython missing"
            sys.exit(1)
         if teilenq_provided == False:
-           print "ERROR: teilenq missing"
-           sys.exit(1)
+           teilenq=''
+           
 
 
