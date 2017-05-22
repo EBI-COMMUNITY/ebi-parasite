@@ -5,6 +5,7 @@ import subprocess
 from lxml import etree
 import xml.etree.ElementTree as ET
 from utilities import properties
+from utilities import file
 
 #Parameters:
 #taxonomic division, -d virus/bacteria
@@ -31,7 +32,7 @@ def get_args():
  
     # Assign description to the help doc
     parser = argparse.ArgumentParser(description='Script assembles short reads based on some criteria')
-    parser.add_argument('-p', '--properties_file', type=str, help='Please provide the properties file', required=False)
+    parser.add_argument('-p', '--properties_file', type=str, help='Please provide the properties file', required=True)
     parser.add_argument('-d', '--division', type=str, help='Please provide the taxonomic division, virus or bacteria', required=False)
     parser.add_argument('-a', '--assembly_programs', type=str, help='Please provide the assembler, velvet or spade', required=False)
     parser.add_argument('-fq1', '--fastq1', type=str, help='Please provide the first fastq file', required=True)
@@ -57,6 +58,16 @@ def get_args():
 
 
 def initiate():
+    fi=file()
+    dir=prop.workdir+"/assembly"
+    fi.create_processing_dir(prop.workdir+"/quality")
+    fi.create_processing_dir(prop.workdir+"/assembly")
+    fi.create_processing_dir(prop.workdir+"/snp")
+    fi.create_processing_dir(prop.workdir+"/assembly")
+    fi.create_processing_dir(prop.workdir+"/assembly")
+    fi.create_processing_dir(prop.workdir+"/assembly")
+    fi.create_processing_dir(prop.workdir+"/assembly")
+    fi.create_processing_dir(prop.workdir+"/assembly")
 	
 
 def execute_stage1():
@@ -90,7 +101,10 @@ def execute_stage8():
 if __name__ == '__main__':
     
     get_args()
-
+    global prop
+    prop=properties(properties_file)
+    print prop.workdir
+    initiate()
     execute_stage1()
     execute_stage2()
     execute_stage3()
