@@ -62,12 +62,12 @@ def initiate():
     dir=prop.workdir+"/assembly"
     fi.create_processing_dir(prop.workdir+"/quality")
     fi.create_processing_dir(prop.workdir+"/assembly")
-    fi.create_processing_dir(prop.workdir+"/snp")
-    fi.create_processing_dir(prop.workdir+"/assembly")
-    fi.create_processing_dir(prop.workdir+"/assembly")
-    fi.create_processing_dir(prop.workdir+"/assembly")
-    fi.create_processing_dir(prop.workdir+"/assembly")
-    fi.create_processing_dir(prop.workdir+"/assembly")
+    fi.create_processing_dir(prop.workdir+"/reference-mapping")
+    fi.create_processing_dir(prop.workdir+"/SNPs")
+    fi.create_processing_dir(prop.workdir+"/structural-recombination")
+    fi.create_processing_dir(prop.workdir+"/hyper-variable-analysis")
+    fi.create_processing_dir(prop.workdir+"/cluster-analysis")
+    
 	
 
 def execute_stage1():

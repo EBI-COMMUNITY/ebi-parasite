@@ -115,6 +115,7 @@ class properties(object):
         biopython_provided=False        
         teilenq_provided=False
         velvetoptimiser_provided=False  
+        path_to_trim_galore_provided=False
             
         
         for l in lines:
@@ -167,6 +168,9 @@ class properties(object):
             elif pair[0].lower() == 'path_to_usearch':
                 path_to_usearch = pair[1]
                 path_to_usearch_provided = True
+            elif pair[0].lower()=='path_to_trim_galore':
+                path_to_trim_galore=pair[1]
+                path_to_trim_galore_provided=True
             elif pair[0].lower() == 'path_to_spades':
                 path_to_spades = pair[1]
                 path_to_spades_provided = True
@@ -226,6 +230,9 @@ class properties(object):
            sys.exit(1)
         if illumina_core_provided == False:
            print "ERROR: llumina_core missing"
+           sys.exit(1)
+        if path_to_trim_galore_provided==False:
+           print "ERROR: path_to_trim_galore missing"
            sys.exit(1)
         if biopython_provided == False:
            print "ERROR: biopython missing"

@@ -1,5 +1,6 @@
 path_to_quasr:/home/matthew/gedichten/QUASR_v7.02/readsetProcessor.jar
 path_to_usearch:/home/matthew/gedichten/usearch
+path_to_trim_galore:
 path_to_spades:/home/matthew/gedichten/SPAdes-3.9.0-Linux/bin/spades.py
 data_base_list_file:38_virus_list_11Dec16_cleaned.txt
 illumina_core:/home/matthew/gedichten/illumina_core.txt
