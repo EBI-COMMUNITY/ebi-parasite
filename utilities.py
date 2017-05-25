@@ -92,6 +92,7 @@ class properties(object):
     def __init__(self, property_file):
         with open(property_file) as f:
              lines = f.readlines()
+             print lines
         
         workdir_provided=False
         workdir_input_provided=False
@@ -170,6 +171,7 @@ class properties(object):
                 path_to_usearch_provided = True
             elif pair[0].lower()=='path_to_trim_galore':
                 path_to_trim_galore=pair[1]
+                print path_to_trim_galore
                 path_to_trim_galore_provided=True
             elif pair[0].lower() == 'path_to_spades':
                 path_to_spades = pair[1]

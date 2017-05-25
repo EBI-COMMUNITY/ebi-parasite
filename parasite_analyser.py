@@ -6,6 +6,7 @@ from lxml import etree
 import xml.etree.ElementTree as ET
 from utilities import properties
 from utilities import file
+from quality import trim_galore
 
 #Parameters:
 #taxonomic division, -d virus/bacteria
@@ -71,7 +72,9 @@ def initiate():
 	
 
 def execute_stage1():
-	print "stage 1 has started!"
+	print "stage 1: quality control  has started!"
+        trimgalore=trim_galore(fastq1,fastq1,prop, True)
+        trimgalore.execute()
 
 
 def execute_stage2():
@@ -103,6 +106,7 @@ if __name__ == '__main__':
     get_args()
     global prop
     prop=properties(properties_file)
+    print prop
     print prop.workdir
     initiate()
     execute_stage1()

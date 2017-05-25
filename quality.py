@@ -2,7 +2,7 @@ from utilities import command
 
 
 
-class quality:
+class trim_galore:
 
 
 
@@ -27,9 +27,9 @@ class quality:
 
 
 	def post_process():
-		print "TODO:"
+	    print "TODO:"
 
 
 	def execute(self):
-		run_trim_galore()
+            self.run_trim_galore()
 
