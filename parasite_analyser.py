@@ -73,6 +73,7 @@ def initiate():
 
 def execute_stage1():
 	print "stage 1: quality control  has started!"
+        print "2-2:",prop.path_to_trim_galore
         trimgalore=trim_galore(fastq1,fastq1,prop, True)
         trimgalore.execute()
 
@@ -108,6 +109,7 @@ if __name__ == '__main__':
     prop=properties(properties_file)
     print prop
     print prop.workdir
+    print "2-1:",prop.path_to_trim_galore
     initiate()
     execute_stage1()
     execute_stage2()

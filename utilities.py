@@ -122,71 +122,71 @@ class properties(object):
         for l in lines:
             pair=l.strip().split(":")
             if pair[0].lower()=='workdir':
-                self.workdir=pair[1]
+                self.workdir=pair[1].strip("\n")
                 workdir_provided=True
             elif pair[0].lower()=='max_core_job':
-                self.max_core_job=pair[1]
+                self.max_core_job=pair[1].strip("\n")
                 max_core_job_provided=True
             elif pair[0].lower()=='workdir_input':
-                self.workdir_input=pair[1]
+                self.workdir_input=pair[1].strip("\n")
                 workdir_input_provided=True
             elif pair[0].lower()=='archivedir':
-                self.archivedir=pair[1]
+                self.archivedir=pair[1].strip("\n")
                 archivedir_provided=True
             elif pair[0].lower()=='dbuser':
-                self.dbuser=pair[1]
+                self.dbuser=pair[1].strip("\n")
                 dbuser_provided=True
             elif pair[0].lower()=='dbpassword':
-                self.dbpassword=pair[1]
+                self.dbpassword=pair[1].strip("\n")
                 dbpassword_provided=True
             elif pair[0].lower()=='dbhost':
-                self.dbhost=pair[1]
+                self.dbhost=pair[1].strip("\n")
                 dbhost_provided=True
             elif pair[0].lower()=='dbname':
-                self.dbname=pair[1]
+                self.dbname=pair[1].strip("\n")
                 dbname_provided=True
             elif pair[0].lower()=='emc_slim_program':
-                self.emc_slim_program=pair[1]
+                self.emc_slim_program=pair[1].strip("\n")
                 emc_slim_program_provided=True
             elif pair[0].lower()=='emc_slim_property_file':
-                self.emc_slim_property_file=pair[1]
+                self.emc_slim_property_file=pair[1].strip("\n")
                 emc_slim_property_file_provided=True
             elif pair[0].lower()=='dtu_cge_databases':
-                self.dtu_cge_databases=pair[1]
+                self.dtu_cge_databases=pair[1].strip("\n")
                 dtu_cge_databases_provided=True
             elif pair[0].lower()=='analysis_submission_mode':
-                self.analysis_submission_mode=pair[1]
+                self.analysis_submission_mode=pair[1].strip("\n")
                 analysis_submission_mode_provided=True
             elif pair[0].lower()=='analysis_submission_action':
-                self.analysis_submission_action=pair[1]
+                self.analysis_submission_action=pair[1].strip("\n")
                 analysis_submission_action_provided=True
             elif pair[0].lower()=='dtu_cge_databases':
-                self.analysis_submission_url=pair[1]
+                self.analysis_submission_url=pair[1].strip("\n")
                 analysis_submission_url_provided=True
             elif pair[0].lower() == 'path_to_quasr':
-                path_to_quasr = pair[1]
+                path_to_quasr = pair[1].strip("\n")
                 path_to_quasr_provided = True
             elif pair[0].lower() == 'path_to_usearch':
-                path_to_usearch = pair[1]
+                path_to_usearch = pair[1].strip("\n")
                 path_to_usearch_provided = True
             elif pair[0].lower()=='path_to_trim_galore':
-                path_to_trim_galore=pair[1]
-                print path_to_trim_galore
+                path_to_trim_galore=pair[1].strip("\n")
+                print "1:",path_to_trim_galore
                 path_to_trim_galore_provided=True
             elif pair[0].lower() == 'path_to_spades':
-                path_to_spades = pair[1]
+                path_to_spades = pair[1].strip("\n")
                 path_to_spades_provided = True
             elif pair[0].lower() == 'data_base_list_file':
-                data_base_list_file = pair[1]
+                data_base_list_file = pair[1].strip("\n")
                 data_base_list_file_provided = True
             elif pair[0].lower() == 'illumina_core':
-                illumina_core = pair[1]
+                illumina_core = pair[1].strip("\n")
                 illumina_core_provided = True
             elif pair[0].lower() == 'biopython':
-                biopython = pair[1]
+                biopython = pair[1].strip("\n")
                 biopython_provided = True
             elif pair[0].lower() == 'teilenq':
-                teilenq = pair[1]
+                teilenq = pair[1].strip("\n")
                 teilenq_provided = True
                 
         

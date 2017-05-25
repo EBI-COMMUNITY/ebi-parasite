@@ -16,7 +16,8 @@ class trim_galore:
 
 
 	def run_trim_galore(self):
-
+                print self.pair
+                print "3:",self.prop.path_to_trim_galore
 		if self.pair=='True':
 			comm=self.prop.path_to_trim_galore+" --paired -q 20 "+ self.fq1+" "+self.fq2
 		else:
