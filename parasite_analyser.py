@@ -57,6 +57,12 @@ def get_args():
         assemblers = args.assembly_programs.split(",")
         print "TODO: split the asssemblies and put it in assemblers"
 
+    print "program parametres are:"
+    print "properties_file:",properties_file
+    print "fastq1:",fastq1
+    print "fastq2:",fastq2
+    print "assemblers:",assemblers
+    print "division:",division
 
 def initiate():
     fi=file()
@@ -72,8 +78,7 @@ def initiate():
 	
 
 def execute_stage1():
-	print "stage 1: quality control  has started!"
-        print "2-2:",prop.path_to_trim_galore
+	print "\nstage 1: quality control  has started!"
         trimgalore=trim_galore(fastq1,fastq1,prop, True)
         trimgalore.execute()
 
@@ -107,9 +112,9 @@ if __name__ == '__main__':
     get_args()
     global prop
     prop=properties(properties_file)
-    print prop
-    print prop.workdir
-    print "2-1:",prop.path_to_trim_galore
+    print "\n","Properties attributes:"
+    print prop.__dict__
+    
     initiate()
     execute_stage1()
     execute_stage2()
