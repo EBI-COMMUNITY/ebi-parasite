@@ -87,6 +87,29 @@ class file(object):
         except OSError as err:
             print("OS error: {0}".format(err))
 
+    def copy_file(self,srcfile,distfile)
+
+        try: 
+            shutil.copy (srcfile, srcfile)
+        except shutil.Error as e:
+            message='Error: %s' %e 
+            print(message)
+            
+
+    def copy_src_into_dest(self,src, dest):
+            name=os.path.basename(src)
+            dest_file=os.path.join(dest, name)
+            try:
+                shutil.copytree(src, dest_file)
+            except shutil.Error as e:
+                message='Directory not copied. Error: %s' %e
+                self.error_list.append(message.replace("'",""))
+                print(message)
+            except OSError as e:
+                message='Directory not copied. Error: %s' %e
+                self.error_list.append(message.replace("'",""))
+                print(message)
+
 
 
 
