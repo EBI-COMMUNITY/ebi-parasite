@@ -3,6 +3,7 @@ import os
 import sys
 from signal import alarm, signal, SIGALRM, SIGKILL
 from subprocess import PIPE, Popen
+import shutil
 
 '''
 How to run it:
@@ -59,7 +60,7 @@ class command(object):
 
 
 
-class file(object):
+class fileutils(object):
 
 
     def delete(self,dir,error_list):
@@ -79,7 +80,7 @@ class file(object):
             print("OS error: {0}".format(err))
 
 
-    def move_file(self,file)
+    def move_file(self,file):
 
         try: 
             if not os.path.exists(file):
@@ -87,12 +88,16 @@ class file(object):
         except OSError as err:
             print("OS error: {0}".format(err))
 
-    def copy_file(self,srcfile,distfile)
+    def copy_file(self,srcfile,destfile):
 
         try: 
-            shutil.copy (srcfile, srcfile)
+            #shutil.copy (srcfile, destfile)
+            shutil.copytree(srcfile, destfile)
         except shutil.Error as e:
-            message='Error: %s' %e 
+            message='Directory not copied. Error: %s' %e
+            print(message)
+        except OSError as e:
+            message='Directory not copied. Error: %s' %e
             print(message)
             
 
@@ -103,11 +108,9 @@ class file(object):
                 shutil.copytree(src, dest_file)
             except shutil.Error as e:
                 message='Directory not copied. Error: %s' %e
-                self.error_list.append(message.replace("'",""))
                 print(message)
             except OSError as e:
                 message='Directory not copied. Error: %s' %e
-                self.error_list.append(message.replace("'",""))
                 print(message)
 
 

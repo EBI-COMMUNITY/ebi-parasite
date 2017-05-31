@@ -5,7 +5,7 @@ import subprocess
 from lxml import etree
 import xml.etree.ElementTree as ET
 from utilities import properties
-from utilities import file
+from utilities import fileutils
 from quality import trim_galore
 
 #Parameters:
@@ -65,7 +65,7 @@ def get_args():
     print "division:",division
 
 def initiate():
-    fi=file()
+    fi=fileutils()
     dir=prop.workdir+"/assembly"
     fi.create_processing_dir(prop.workdir+"/quality")
     fi.create_processing_dir(prop.workdir+"/assembly")
