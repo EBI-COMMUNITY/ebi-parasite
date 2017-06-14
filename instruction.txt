@@ -1,0 +1,159 @@
+Project TODO Actions
+Create a volume in COMPARE-VM-2 for parasite
+Move the fastq files into COMPARE-VM-2
+Set up the quality control step
+
+Project Accessories
+Webinbox: 
+Webin-44537
+
+VM:
+ubuntu@193.62.54.67
+
+Datahub:
+
+CLIMB: 
+username
+bryn:46_ENA
+password
+https://discourse.climb.ac.uk
+https://bryn.climb.ac.uk
+http://137.205.69.177
+https://github.com/tseemann/nullarbor
+https://stack.warwick.climb.ac.uk
+Project Step Summary
+In short (but I can think we need to discuss this more in depth), this is what I would like to do starting from raw NGS sequence data:
+1) Trimming of the raw sequence
+* trim_galore installation done.
+
+* Fastqc done
+
+* fastx_trimmer installation done
+Libraries have been installed in:
+   /usr/local/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to `/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+2) Assembly (ideally, tests of different assemblers and selection of the best)
+3) Reference mapping against annotated genomes (C. parvum and C. hominis), and calculation of standard parameters (e.g., coverage)
+C. parvum has better annotation (paper)
+C. hominis has better genomes (same papers)
+
+get the availbale data for :
+Cryptosporidium parvum
+Taxonomy ID: 5807
+and 
+Cryptosporidium hominis
+Taxonomy ID: 237895
+
+
+I can do that without any issue. I have tools installed for this one. But would you point me to the annotated reference genomes of C. parvum and C. hominis?
+And my understanding here is to map the reads from those 13 isolates to reference genomes and you are not talking about mapping the assemblies, am I correct? Or shall we do both of it? And also if you are interested to any other parameters than coverage let me know.
+4) Comparative analysis of genomes based on SNPs (culminating into phylogenomics)
+Here you want to SNP analysis against the mentioned reference genomes for all the 13 and
+build the phylogenomics tree of all those 13 plus 2 references? plus the publically available ones.
+
+The gene part that close to telomer are the most variable ones. And telemoer is where the recombinations events hapens a lot.
+5) Comparative analysis for genes under selection pressure (through calculation of dN/dS ratio))
+
+Do it based on a window of the genomes and then we can look at specific genes.
+
+         
+
+         My understanding is to do as follow but I might be completely wrong:
+         1. Get the assemblies from step 2 and do functional gene annotation. 
+         2. Then get the sequences of the genes.  
+         3.  Align the genes against the reference genomes to find the SNPs. 
+         4. Calculated number of silent and non-silent per genes and calculated dN/dS ratio per gene.
+6) Comparative analysis specifically looking for structural rearrangements and recombination events
+This is clear for me for now. There are standard tools and methods that people use for human genomes variation analysis and I can use them.
+         
+         The aim is to find out if the structural rearrangements and recombination events have happend outside the locus that already reported by many researcher. Is this can conclude and predict anything base don these events.
+7) Comparative analysis of hyper-variable regions (e.g., regions containing simple sequence repeats) with the goal of identifying markers useful for classical genotyping studies of isolates.
+Reapeat finder to use.
+Some typing scheme based on repeat. We aim to find the most variable part of genomes cotaining the repeat. 
+
+Need to discuss more.
+
+8) Cluster analysis of samples originating from outbreaks, the goal being to define criteria useful to distinguish outbreak samples from unlinked, sporadic cases.
+Average rate of variability need to be calculated.
+outbreak clustring based some threshhold of difference.
+
+In work package 4 and 7.
+
+Sounds very interesting, and I possibly can use machine learning techniques for classifications. Basically my understanding here to be able discover important criteria that can lead to outbreaks and I think it would be very useful if we can develop a machine learning algorithm which can classify a sample as either outbreak or non-outbreak. But to do that how many samples do we have that we know it has created outbreak? And how many that haven’t created any out break? Basically we need to build a training dataset that we should use to train out algorithm and then a test data set to test out work.  Please let me know if you are looking for something else in 8.
+Project technical notes
+Project Scientific Notes
+-about the genome itself: small (9 Mb), essentially composed of genes, quite rich in A+T (70%), organized in 8 linear chromosomes. Regions of very low complexity can be difficult to sequence and/or assemble.
+-papers: attached are all NGS-based papers dealing with Crypto. As you see, not so many studies. I am sure you can orient yourself in the Materials and Methods to figure out who has used what in terms of bioinformatics analysis. But I will include this information in the document I am working on.
+
+
+As you already indicate, we are currently working on databases that can be used for the identification of protozoa, and hopefully at some point also typing of specific lineagues.
+So far we have been focusing on genomes, and have only touched upon gene-specific databases (18S rRNA genes, etc.) for sub-typing. This is work in progress, and we have a bioinformatics MSc student to support us in these efforts.
+
+2016 strategy plan for protozoa (Cryptosporidium, Giardia) in COMPARE
+State of the art
+Information about genomes is still rather scarce for both groups of parasites. Recently, Casper has reviewed this for Cryptosporidium and identified a number of genome drafts deposited in GenBank (approximately 8 from C. parvum, 6 from C. hominis, 1 from C. muris, 1 from a chipmunk genotype), or at the Eukaryotic Pathogens Database (C. bailey, C. meleagridis) and at DDBJ (ERP001716 Pilot sequencing project of Cryptosporidium isolates, 43 drafts, not obvious to understand the source of isolates by visiting the webpage). 
+There are more genomes likely to be released from a project in Sweden, and ongoing genome sequencing in the US (CDC) and elsewhere.
+tax_tree(5806- Cryptosporidium)
+Assemblies:
+
+Sequences:
+Sequence
+Sequence (Update) (299)
+Sequence (Release) (108,100)
+Reads:
+
+
+A snapshot of the methodology used in published NGS studies:
+1)	Guo et al. analysed 24 different specimens and reported on 20 whole genome sequences from 6 different species. Both Roche 454 and Illumina (2x100 paired ends) methods were used. Assembly was done using CLC Genomics Workbench while for mapping of contigs to reference genomes they used MAUVE. The whole genome sequences are NOT available in public database, except for one isolate of the chipmunk genotype.
+2)	Hadfield et al. analysed a number of clinical specimens to develop a method for oocyst puririfcation before NGS. They deposited 7 C. parvum and 3 C. hominis. All was based on Illumina (both Miseq and Hiseq) platform and Nextera-based libraries, so they have not used WGA. In terms of bio-informatics, they used CLC Genomics Workbench for de novo assembly, and CLC and Bowtie for read mapping. They further processed the de novo contigs from CLC by using a Post Assembly Genome Improvement Protocol (PAGIT). This consisted in ordering the scaffolds against the reference genome by ABACAS, a gap filling step by IMAGE, removal of single base errors and short indels by ICORN and finally transfer of the annotation of the reference genome by RATT.
+3)	 Isaza et al. also focused on an improved annotation of C. parvum by sequencing full length cDNA libraries generated from oocyst and sporozoite mRNA. This new annotation mostly refined the exon-intron structure of a number of genes, but it is something to remember if we wish to update the annotation of the reference IOWA genome. In terms of genomics, they have used both 454 and Illumina to drat the genome of a C. hominis isolate from a HIV-positive woman. The genotype of this isolate was IeA11G3T3. The resulting genome was of 9.05 Mb in length, with a mean coverage of 68X, and 86 gaps. In terms of bio-informatics, they used Newbler for de novo assembly, and assigned the resulting contigs with ABACAS to pseudo-chromosomes using as reference C. parvum Iowa chromosomes. Reads were mapped using Bowtie. Some of the gaps were closed by 12 iterations of IMAGE. Transfer of the annotation of the reference genome by RATT.
+
+ISS has generated four genome sequences (Illumina-based) of C. parvum isolates from animals. These genomes have been sequenced, after Whole Genome Amplification of genomic DNA from highly purified oocysts, at very high coverage (average more than 1000). Preliminary analyses of raw sequence data showed that 92 to 98% of the sequences mapped to the C. parvum reference genome, thus indicating that the overall procedure worked well. 
+In this moment, other Cryptosporidium isolates (7 from animals, 2 from humans) and the first 8 Giardia duodenalis isolates are being sequenced, also after WGA and based on Illumina platform, this time using PCR free production of libraries. We plan to compare genomes drafts from WGA-amplified material and non-WGA from the same isolates to figure out what sort of bias and errors the WGA technique is introducing. We are actively looking for isolates, and have established good contacts with colleagues in EU and abroad. This should be source of interesting samples.
+If we wish to start with Cryptosporidium, then we can use the genomes just mentioned above. 
+
+What we need
+As the available information is growing, and considering that bio-informatics pipelines that specifically deal with protozoan genomes are lacking, it is useful to discuss at least some of the features of such a pipeline:
+1)	A tool for extracting SNPs from homologous genes, and then for running a phylogenetic analysis. This can be tested on the existing genomes.
+2)	A tool for extracting defined markers (for Cryptosporidium: 18S rDNA, Hsp70, actin, GP60; for Giardia: 18S rDNA, beta-giardin, glutamate dehydrogenase, triose phosphate isomerase) that have been widely used in previous molecular typing of isolates. Note: to be effective, a database containing relevant information on the same markers needs to be developed (Casper already started with this).
+3)	A tool that can extract sequences containing specific microsatellite repeats (at well-defined loci), count the number of repeats and assigned an allele code. Again, a database containing all known alleles at those loci needs to be developed. At the end, a matrix containing alleles codes at various loci can be generated and this information used to compare with existing data. Note: these regions are notoriously difficult to sequence.
+4)	A tool that can compute non-synonymous versus synonymous substitutions in all homologous genes and generate a table of genes showing a dN/dS ratio over a defined threshold. Note: what genes are under positive selection pressure is essentially unknown.
+
+
+Other important things:
+•	To compare the performance of the different assemblers already present in the VM of Compare
+•	More? Please express your opinion
+
+A more general question that we should ask ourselves is: “What potential users of Compare would like to see in terms of data processing and analysis if they have raw sequence data from Cryptosporidium or Giardia (and in perspective, other parasites)?”
+I think there is not a single answer, also because users may come from the clinical world, or be more interested in the environmental component (water), in food, or in outbreaks. As such, all of them may be interested in getting feedback about the quality of the data (e.g. coverage), but the exact type of outcome, and the pipeline behind, will need to be adapted considering the nature of the isolates and the reasons why these were studied by NGS.
+
+
+
+
+
+Project background information
+
+Homolog
+A gene related to a second gene by descent from a common ancestral DNA sequence. The term, homolog, may apply to the relationship between genes separated by the event of speciation (see ortholog) or to the relationship betwen genes separated by the event of genetic duplication (see paralog).
+
+Ortholog
+Orthologs are genes in different species that evolved from a common ancestral gene by speciation. Normally, orthologs retain the same function in the course of evolution. Identification of orthologs is critical for reliable prediction of gene function in newly sequenced genomes. (See also Paralogs.).
+
+Speciation
+Speciation is the origin of a new species capable of making a living in a new way from the species from which it arose. As part of this process it has also aquired some barreir to genetic exchage with the parent species.
+
+Paralog
+Paralogs are genes related by duplication within a genome. Orthologs retain the same function in the course of evolution, whereas paralogs evolve new functions, even if these are related to the original one.
+
