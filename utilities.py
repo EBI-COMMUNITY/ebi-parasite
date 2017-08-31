@@ -8,8 +8,8 @@ import shutil
 '''
 How to run it:
 You need to first import it this Class into your code
-Example: from utilities import Command
-Then you can create an object of Command class and then use a function:
+Example: from utilities import command
+Then you can create an object of command class and then use a function:
 Example:
 command = Command("python /usr/bin/spades.py -1 8605_7_1_test.fastq -2 8605_7_2_test.fastq -k 21,33,55,77,99,127 --careful --only-assembler -o spades_small_dir")
 returncode,stdout,stderr=command.run(timeout=5)
