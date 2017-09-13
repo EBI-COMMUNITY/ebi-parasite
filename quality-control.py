@@ -49,12 +49,12 @@ def initiate():
     #Here please provide the initiation code
      print "Here please do the initiation code"
      #fi=fileutils()
-	 #indir=self.prop.workdir+"/quality/in/"
+     #indir=self.prop.workdir+"/quality/in/"
      #outdir=self.prop.workdir+"/quality/out/"
-	 #fi.create_processing_dir(indir)
-	 #fi.create_processing_dir(outdir)
-	 #fi.copy_src_into_dest(self.fq1,indir)
-	 #fi.copy_src_into_dest(self.fq2,indir)
+     #fi.create_processing_dir(indir)
+     #fi.create_processing_dir(outdir)
+     #fi.copy_src_into_dest(self.fq1,indir)
+     #fi.copy_src_into_dest(self.fq2,indir)
 
 
 def execute():
