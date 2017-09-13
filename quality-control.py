@@ -60,7 +60,7 @@ def initiate():
 def execute():
     #Here please provide the execucation code
     print "Here please do the execucation  code"
-    run_trim_galore()
+    run_trim_galore(fastqfiles)
     
     #Execution of the external softwares, you need to use command class from utilities
     #Example: from utilities import command
@@ -72,19 +72,13 @@ def execute():
 def post_process():
     #Here please provide the post process code
     print "Here please do the post process  code"
-    	fi=fileutils()
-		indir=self.prop.workdir+"/quality/in/"
-		outdir=self.prop.workdir+"/quality/out/"
-		fi.create_processing_dir(indir)
-		fi.create_processing_dir(outdir)
-		fi.copy_src_into_dest(self.fq1,indir)
-		fi.copy_src_into_dest(self.fq2,indir)
-		fqout1=self.fq1+"_val_1.fq"
-		fqout2=self.fq2+"_val_2.fq"
-		report=self.fq1+"_trimming_report.txt"
-		fi.copy_src_into_dest(fqout1,indir)
-		fi.copy_src_into_dest(fqout2,indir)
-		fi.copy_src_into_dest(report,indir)
+    fi=fileutils()
+    fqout1=self.fq1+"_val_1.fq"
+    fqout2=self.fq2+"_val_2.fq"
+    report=self.fq1+"_trimming_report.txt"
+    fi.copy_src_into_dest(fqout1,indir)
+    fi.copy_src_into_dest(fqout2,indir)
+    fi.copy_src_into_dest(report,indir)
 
 
 
