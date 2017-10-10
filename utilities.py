@@ -4,6 +4,8 @@ import sys
 from signal import alarm, signal, SIGALRM, SIGKILL
 from subprocess import PIPE, Popen
 import shutil
+import re
+
 
 '''
 How to run it:
@@ -20,7 +22,6 @@ class command(object):
 	def __init__(self, command):
 		self.command = command
 		
-
 	def run(self, timeout = -1):
 		env=None
 		kill_tree = True
@@ -33,10 +34,11 @@ class command(object):
 			signal(SIGALRM, alarm_handler)
 			alarm(timeout)
 		try:
-			stdout, stderr = p.communicate()
+			stdout, stderr = p.communicate()	
+			
 			if timeout != -1:
 				alarm(0)
-		except Alarm:
+		except Alarm as a:
 			pids = [p.pid]
 			if kill_tree:
 				pids.extend(self.get_process_children(p.pid))
@@ -48,6 +50,7 @@ class command(object):
 					pass
 			return -1,'',''
 		return p.returncode, stdout, stderr
+	
 
 	def get_process_children(self,pid):
 		p = Popen('ps --no-headers -o pid --ppid %d' % pid, shell = True,
@@ -70,6 +73,7 @@ class fileutils(object):
 			message='Directory not copied. Error: %s' %e
 			error_list.append(message.replace("'",""))
 			print(message)
+			
 
 	def create_processing_dir(self,directory):
 		
@@ -80,7 +84,7 @@ class fileutils(object):
 			print("OS error: {0}".format(err))
 
 
-	def move_file(self,file):
+	def move_file(self,file,directory):
 
 		try: 
 			if not os.path.exists(file):
@@ -112,6 +116,7 @@ class fileutils(object):
 			except OSError as e:
 				message='Directory not copied. Error: %s' %e
 				print(message)
+				
 
 	def copy_dir_into_dest(self,src, dest):
 			name=os.path.basename(src)
@@ -124,16 +129,30 @@ class fileutils(object):
 			except OSError as e:
 				message='Directory not copied. Error: %s' %e
 				print(message)
+				
 
+	def add_file_prefix(self,source_fpath,prefix):    	
+		try:
+			dest_fpath=os.path.join(os.path.dirname(source_fpath),prefix+os.path.basename(source_fpath))
+			shutil.move(source_fpath, dest_fpath)
+		except (shutil.Error, IOError) as e:
+			message='%s can NOT be moved to %s. Error: %s' %(source_fpath,dest_fpath,e)
+			print(message)
 
+	
+	def copy_file_add_prefix(self,source_fpath,outdir,prefix):
+		self.copy_file_into_dest(source_fpath,outdir)
+		source_file2=os.path.join(outdir,os.path.basename(source_fpath))
+		self.add_file_prefix(source_file2,prefix)
 
-
+		
+'''
 class db(object):
 
-	def get_connection(db_user,db_password,db_host,db_database):
+	def get_connection(self,db_user,db_password,db_host,db_database):
 		conn = MySQLdb.connect(user=db_user, passwd=db_password, host=db_host,db=db_database)
 		return conn
-
+'''
 
 class properties(object):
 	
@@ -144,6 +163,7 @@ class properties(object):
 		
 		workdir_provided=False
 		trim_galore_provided=False
+		spades_provided=False
 		#workdir_input_provided=False
 		#archivedir_provided=False
 		#dbuser_provided=False
@@ -171,6 +191,9 @@ class properties(object):
 			elif pair[0].lower()=='trim_galore': 
 				self.trim_galore=pair[1].strip("\n")
 				trim_galore_provided=True
+			elif pair[0].lower()=='spades': 
+				self.spades=pair[1].strip("\n")
+				spades_provided=True
 			# elif pair[0].lower()=='max_core_job':
 			#     self.max_core_job=pair[1].strip("\n")
 			#     max_core_job_provided=True
