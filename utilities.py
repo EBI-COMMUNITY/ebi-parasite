@@ -64,7 +64,12 @@ class command(object):
 
 
 class fileutils(object):
-
+	
+	def change_dir(self,path):
+		try: 
+			os.chdir(path)
+		except OSError as err:
+			print("OS error: {0}".format(err))
 
 	def delete(self,dir,error_list):
 		try:
@@ -82,7 +87,6 @@ class fileutils(object):
 				os.makedirs(directory)
 		except OSError as err:
 			print("OS error: {0}".format(err))
-
 
 	def move_file(self,file,directory):
 
@@ -111,24 +115,24 @@ class fileutils(object):
 			try:
 				shutil.copy(src, dest_file)
 			except shutil.Error as e:
-				message='Directory not copied. Error: %s' %e
+				message='{} can not be copied to {}. Error: {}'.format(src,dest,e)
 				print(message)
 			except OSError as e:
-				message='Directory not copied. Error: %s' %e
+				message='{} can not be copied to {}. Error: {}'.format(src,dest,e)
 				print(message)
 				
 
 	def copy_dir_into_dest(self,src, dest):
-			name=os.path.basename(src)
-			dest_file=os.path.join(dest, name)
-			try:
-				shutil.copytree(src, dest_file)
-			except shutil.Error as e:
-				message='Directory not copied. Error: %s' %e
-				print(message)
-			except OSError as e:
-				message='Directory not copied. Error: %s' %e
-				print(message)
+		name=os.path.basename(src)
+		dest_file=os.path.join(dest, name)
+		try:
+			shutil.copytree(src, dest_file)
+		except shutil.Error as e:
+			message='Directory not copied. Error: %s' %e
+			print(message)
+		except OSError as e:
+			message='Directory not copied. Error: %s' %e
+			print(message)
 				
 
 	def add_file_prefix(self,source_fpath,prefix):    	
@@ -155,7 +159,20 @@ class db(object):
 '''
 
 class properties(object):
-	
+	def check_file_exist(self,file):
+		if os.path.isfile(file):
+			return 1
+		else:
+			print("ERROR: {} does not exist!".format(file))
+			sys.exit(1);			
+
+	def check_dir_exist(self,dir):
+		if os.path.isdir(dir):
+			return 1
+		else:
+			print("ERROR: {} does not exist!".format(dir))
+			sys.exit(1);
+			
 	def __init__(self, property_file):
 		with open(property_file) as f:
 			 lines = f.readlines()
@@ -164,6 +181,9 @@ class properties(object):
 		workdir_provided=False
 		trim_galore_provided=False
 		spades_provided=False
+		bwa_provided=False
+		ena_ref_fasta_ch_provided=False
+		ena_ref_fasta_cp_provided=False
 		#workdir_input_provided=False
 		#archivedir_provided=False
 		#dbuser_provided=False
@@ -187,13 +207,29 @@ class properties(object):
 			pair=l.strip().split(":")
 			if pair[0].lower()=='workdir':
 				self.workdir=pair[1].strip("\n")
-				workdir_provided=True
+				self.check_dir_exist(self.workdir)
+				workdir_provided=True				
 			elif pair[0].lower()=='trim_galore': 
 				self.trim_galore=pair[1].strip("\n")
+				self.check_file_exist(self.trim_galore)
 				trim_galore_provided=True
 			elif pair[0].lower()=='spades': 
 				self.spades=pair[1].strip("\n")
+				self.check_file_exist(self.spades)
 				spades_provided=True
+			elif pair[0].lower()=='bwa': 
+				self.bwa=pair[1].strip("\n")
+				self.check_file_exist(self.bwa)
+				bwa_provided=True
+			elif pair[0].lower()=='ena_ref_fasta_ch': 
+				self.ena_ref_fasta_ch=pair[1].strip("\n")
+				self.check_file_exist(self.ena_ref_fasta_ch)
+				ena_ref_fasta_ch_provided=True
+			elif pair[0].lower()=='ena_ref_fasta_cp': 
+				self.ena_ref_fasta_cp=pair[1].strip("\n")
+				self.check_file_exist(self.ena_ref_fasta_cp)
+				ena_ref_fasta_cp_provided=True
+
 			# elif pair[0].lower()=='max_core_job':
 			#     self.max_core_job=pair[1].strip("\n")
 			#     max_core_job_provided=True
@@ -242,6 +278,18 @@ class properties(object):
 		   self.workdir=os.getcwd()
 		if trim_galore_provided==False:
 		   print "ERROR: path_to_trim_galore missing"
+		   sys.exit(1)
+		if spades_provided==False:
+		   print "ERROR: path_to_spades missing"
+		   sys.exit(1)
+		if bwa_provided==False:
+		   print "ERROR: path_to_bwa missing"
+		   sys.exit(1)		
+		if ena_ref_fasta_ch_provided==False:
+		   print "ERROR: path_to_ena_ref_fasta_ch missing"
+		   sys.exit(1)
+		if ena_ref_fasta_cp_provided==False:
+		   print "ERROR: path_to_ena_ref_fasta_cp missing"
 		   sys.exit(1)
 		# if max_core_job_provided==False:
 		#     self.max_core_job=10
