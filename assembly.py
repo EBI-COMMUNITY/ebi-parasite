@@ -60,8 +60,7 @@ def run_assem_sw(fastqfiles):
         comm=assem_sw_path+" -1 {} -2 {} --careful --cov-cutoff auto -o {}".format(fastqfiles[0],fastqfiles[1],workdir)   
     elif len(fastqfiles)==1:
         comm=assem_sw_path+" -s {} --careful --cov-cutoff auto -o {}".format(fastqfiles[0],workdir)
-    else:
-        print "ERROR: wrong number of fastq files " + fastqfiles.size()
+
     #run command  
     returncode, stdout, stderr=command(comm).run(3600)
     if returncode!=0:

@@ -56,8 +56,7 @@ def run_trim_galore(fastqfiles):
     #single fastq files    
     elif len(fastqfiles)==1:
         comm=qc_sw_path+" -q 20 "+fastqfiles[0]
-    else:
-        print "ERROR: wrong number of fastq files: "+fastqfiles.size()
+
     comm_obj=command(comm)
     returncode, stdout, stderr=comm_obj.run(3600)
     print returncode, stdout, stderr
@@ -92,9 +91,9 @@ def execute():
     os.chdir(workdir)
     fastqfiles=[]
     fastaq_dir=workdir+"/quality/in/"
-    fastqfiles.append(os.path.join(fastaq_dir,os.path.basename(fastq1)))
+    fastqfiles.append(fastq1)
     if fastq2 is not None:
-        fastqfiles.append(os.path.join(fastaq_dir,os.path.basename(fastq2)))
+        fastqfiles.append(fastq2)
     run_trim_galore(fastqfiles)
 
 
