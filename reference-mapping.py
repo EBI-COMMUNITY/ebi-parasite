@@ -58,7 +58,14 @@ def get_args():
     print "fastq2:",fastq2
     print "prefix:",prefix
   
-   
+def run_comm(comm):
+    #run command       
+    print comm
+    returncode, stdout, stderr=command(comm).run(360000)
+    if returncode!=0:
+        print "\nERROR: {} FAILED!!! \n\nSTDERR: {}\nSTDOUT: {}\n".format(comm,stderr,stdout)    
+        sys.exit(1) 
+        
 def run_mapping(fastqfiles):  
     global ref_fasta          
     fi.change_dir(workdir)     
@@ -68,30 +75,21 @@ def run_mapping(fastqfiles):
     
     #define command         
     fq1=fastqfiles[0]
-    fq1_sai=out_prefix+reads_type+'.fq1.sai'
-    comm="{} aln -t 12 {} {} >{}; ".format(bwa_path,ref_fasta,fq1,fq1_sai)
+    fq1_sai=prefix+'.fq1.sai'
+    run_comm("{} aln -t 12 {} {} >{}".format(bwa_path,ref_fasta,fq1,fq1_sai))
     if len(fastqfiles)==2:
         fq2=fastqfiles[1]
-        fq2_sai=out_prefix+reads_type+'.fq2.sai'        
-        comm+="{} aln -t 12 {} {} >{}; ".format(bwa_path,ref_fasta,fq2,fq2_sai)
-        comm+="{} sampe {} {} {} {} {}>{}{}.sam".format(bwa_path,ref_fasta,fq1_sai,fq2_sai,fq1,fq2,out_prefix,reads_type)
+        fq2_sai=prefix+'.fq2.sai'        
+        run_comm("{} aln -t 12 {} {} >{}".format(bwa_path,ref_fasta,fq2,fq2_sai))
+        run_comm("{} sampe {} {} {} {} {}>{}.sam".format(bwa_path,ref_fasta,fq1_sai,fq2_sai,fq1,fq2,prefix))
     elif len(fastqfiles)==1:
-        comm+="{} samse {} {} {}>{}{}.sam".format(bwa_path,ref_fasta,fq1_sai,fq1,out_prefix,reads_type)
-        
-    #run command  
-    returncode, stdout, stderr=command(comm).run(360000)
-    if returncode!=0:
-        print "\nERROR: {} failed!!! \n\nSTDERR: {}\nSTDOUT: {}\n".format(comm,stderr,stdout)    
-        sys.exit(1) 
-    print returncode, stdout, stderr
-
+        run_comm("{} samse {} {} {}>{}.sam".format(bwa_path,ref_fasta,fq1_sai,fq1,prefix))
 
 def initiate():
     print "initiating..."
     global indir
     global outdir
     global fi
-    global out_prefix
     global reads_type     
     global workdir
     global subdir
@@ -105,12 +103,8 @@ def initiate():
     fi.create_processing_dir(indir)
     fi.create_processing_dir(outdir)
     fi.copy_file_into_dest(fastq1,indir)  
-    reads_type='single'
     if fastq2 is not None:
-        reads_type='paired'
         fi.copy_file_into_dest(fastq2,indir)
-    out_prefix="{}_{}_".format(prefix.upper(),genome_name)
-    
 
 def execute():
     print "executing..."
@@ -123,7 +117,7 @@ def execute():
 
 def post_process():
     print "post_processing..."
-    fi.copy_file_into_dest("{}/{}{}.sam".format(workdir,out_prefix,reads_type),outdir)
+    fi.copy_file_into_dest("{}/{}.sam".format(workdir,prefix),outdir)
 
     
 if __name__ == '__main__':
