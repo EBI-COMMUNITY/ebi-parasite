@@ -1,3 +1,117 @@
+Task1: Trimming of the raw sequence                                                                                                                        
+This is actually clear. We have developed a script that uses trim_galore to trim the raw sequences. Trim_galore is the default quality control program in this stage, but we can add some others in case we decide to use other programs. Please let me know if there is anything that you would prefer to use. 
+
+Simone: No, I think any tool is good. I suppose that you can set various parameters before running the tool, which may be important if we decide, e.g., to remove reads of low quality 
+Task 2: Assembly (ideally, tests of different assemblers and selection of the best)          	
+Here we use spade and velvet. This work hasn’t been finished. But I think the instruction for this is clear to me. 
+
+Simoen: Consider that my colleagues at University of Trento obtained good results using Spades, so I would suggest to use this assembler.
+
+Nima: Sure we go for Spade with no other assembly pipeline, but they way we use it might be a bit different than the other team.
+Simone: no problem, I trust you!
+
+
+Task 3: Creating a parasite reference database
+
+Question 1: Shall we create a database of all the SNPs for a parasites or specific parasite and then place the query genome SNPs against the pre calculated SNPs set to do the comparative analysis? If we want to include the publicly available datasets we should first find them, decide if we want to include them, and then perform SNPs for them and build a reference database for them. So any query genome shall be analysed against that database. Shall we include all the nominated parasites in one database and do the phylogenetics against that? Or one database per species? I would go for one reference database containing all the parasite genomes and compare all the incoming against that.
+Simone: it depends on the analysis. I think that C. parvum genomes should be compared first with all other C. parvum genomes and then with C. hominis. Take into account that when we assessed (just before the summer) genome information in public database, we ended up with 4 relatively good C. parvum genomes and 6 less complete, and a slightly larger number for C. hominis. Thus, information to build a SNP database is still limited, but we have 22 C. parvum genomes we sequenced and shortly we will increase this number as well as that for C. hominis.
+I agree to use all the information, I am not sure whether a single database is better than two. We can discuss pros and cons, if you wish
+
+Nima: Would you provide the accessions list of all the genomes that you found in the public database? I also will ask my team member to create a list of all the available genomes and sequences in the database for C. parvum and C. hominis and pass it you, so you can check them and let me know if you wish to include any of them.
+Simone: sure I will. 
+
+Task 4: Reference mapping against annotated genomes (C. parvum and C. hominis), and calculation of standard parameters (e.g., coverage).
+Question 1: Do we want to map the contigs or reads against the reference genomes?
+Simone: Yes, I think that this is necessary for a number of things, including identification of core and accessory genes, 
+
+Nima: OK great, shall we map the contigs we get from the assembly stage against the reference genome? Or map the raw reads against the reference genome? I guess you want to map reads!
+Simone: well, we will surely map the reads, but to look for rearrangements, one can use MAUVE, and I think contigs
+
+Question 2: What are the reference genomes? We need ENA accessions.
+                C. parvum:?         	Study: PRJNA144        ASM16534v1 (IOWA strain)
+Great this has the full assembly, contigs and chromosomes.
+http://www.ebi.ac.uk/ena/data/view/PRJNA144
+http://www.ebi.ac.uk/ena/data/view/GCA_000165345
+
+                C. hominis:?	Study: PRJNA222836
+This has WGS assembly:
+http://www.ebi.ac.uk/ena/data/view/GCA_001593465
+And two sets of reads:
+http://www.ebi.ac.uk/ena/data/view/SRR1015747-SRR1015748
+If we want to use the reads here we may need to investigate the difference between read sets. We should also check how they have assembled it. 
+Does C. hominis also have 8 chromosome like C. parvum?
+
+Simone: yes, C. hominis has 8 chromosomes, too. I will double check what we should retrieve for hominis.
+
+
+Question 3: Is there any other parasite reference genomes that we wish to include? Please list them and also provide the accession numbers for them.
+Simone: No, I think we should include the two above because are the best reconstruction of the genome, and we also have fresh transcriptomics data. Other genomes are only drafted.
+Nima: Great thanks.
+Question 4: What are the standard parameters that you wish to extract from this (A part from coverage)?
+Simone: I think mapping is useful to estimate whether there is a bias in the sequencing experiments, i.e., if there are regions that are under-represented. Mapping data can also be used to visualize rearrangements. At least in the commercial software we have(CLC Genomics Workbench), mapping is used to call SNPs, because if one has all the sequences from one isolate mapped to a reference genome, then it is possible to exclude SNPs by selecting initial options (e.g., a minimum and/or maximum coverage,quality of the nucleotide and surrounding nucleotides, accounting for bias in the ratio forward/reverse reads, ecc) 
+
+Nima: Yes that’s correct, it is needed for SNPs analysis.
+
+
+Task 5: Comparative analysis of genomes based on SNPs (culminating into phylogenomics)     
+The first step is clear here. The first step is to find all the SNPs for a given genome. Then we have possibly couple of options:
+Question 1: What do we expect to get from SNPs analysis?
+Simone: We should use SNPs for phylogenomics analysis, and we need to identify SNPs for the next step (genes under selection)
+Question 2: Do we want to filter the SNPs? Is there any specific region of the genomes that we should have a closer look and look at the SNPs?
+Simone: I will filter SNPs on the basis of th read quality (phred scores) and when coverage is abnormally high or low. We should look at the distribution of SNPs along the chromosomes to identify hot spots of variation, which are likely to be close to the telomeres and plot this in a good graphic format.
+
+Nima: I don't know how we can do this, I think we should provide a result that can be opened with standard graphical softwares. We may be able also cluster the SNPs based on some physical location categorisations. I guess this is the kind of the case that we should figure out by doing it, so we do the SNPs and phylogeny and then decide how we can present the result to be more useful.
+Simone: OK
+We should create a plot number of SNPs versus the location in each genome. Then we should categorize them coding and non-coding part. 
+Task 6: Comparative analysis for genes under selection pressure (through calculation of dN/dS ratio).
+ Would you describe this? Please describe all the steps that need to happen.
+Simone: First we should recall that we are comparing isolates from the same species or from very closely related species (homology between parvum and hominis is very high). This is important because the dN/dS ratio is meant to be used for analysis of species that diverged long time ago, and we should be cautious. 
+Nevertheless, we should compute the frequency and distribution of synonymous and nonsynonymous substitutions for each gene and all isolates. My friends at University of Trento already developed a script that does this calculation starting from multiple alignments of all annotated genes of C. parvum.
+In this way, we can easily detect very conserved genes (with no substitutions at all) on the one tail and highly variable ones on the other tail. Next we should look into the nature of those genes, and it will be valuable to have all genes assigned to functional categories in order to inspect if strongly conserved or strongly variable genes have a tendency to belong to specific categories. There are logical predictions here, but not based on genome-wide comparisons.
+This sort of analysis will be contextualized in the current research for vaccine candidates too. 
+
+Nima:  I don’t quite get how your friends have done it, I think we may need to talk about it in Skype. I write my understanding please correct it as you wish. 
+
+Lets say you have set of annotated genomes of C. parvum. Then do you compare all genes against a reference genome, to first find the substitutions and then figure out if the SNPs is synonymous and nonsynonymous? After that you calculate the frequency of synonymous and nonsynonymous in a given gene in a given genome.
+Simoen: what they did first was to de novo annotate each gene in each the genome, then cross this information with genes annotated in the reference genome to identify those that are present in all genomes (which corresponds to 99% or so). Then they generated multiple alignments for each gene (retaining also the physical position in the chromosomes), Last, they develop a script that scans for substitutions and is able to distinguish synonymous from nonsynonymous. So at the end they have a matrix of distances for each gene in each genome.
+
+Based on your text I think your friends have done a multiple alignment and then for each gene you have the regions that you see different base and the region that all isolates have same base. For the region that they have different bases,  how do you decide which one is actually a substitution and which one is actually what it should be?  
+Simone: I don’t think this is a big problem, but arbitrarily you can always decide that the reference genome is the “standard” nucleotide.
+
+Ok lets say we have calculated the dN/dS for each gene. The first thing that we need is a threshold for classifying them into very conserved genes on the one tail and highly variable ones on the other tail. Based on your text you mentioned that very conserved genes are the genes with no substitutions at all. Do you mean the genes with no nonsynonymous substitutions shall be considered as very conserved genes? And in highly variable ones, what is your threshold for dN/dS. 
+Simone: I believe there are very conserved genes, I should get the results from my friends very soon. To me, the “very” conserved genes will have no substitutions at all (synonymous or nonsynonymous), but when all genes will be ranked it will be easy to see what is the real situation (in the datasets we are looking at now).
+
+After this classification we should get these two groups of genes and assign functional genes categorisation in each genes and then see how this functional annotation families are placed in variable and conserved genes group.  
+Simone: I think we should check whether there are trends. For example, look if very variable genes code for proteins recognized by the host immune system (thus under positive selection to accumulate mutations) whereas very conserved ones code for structural proteins. But I would love to find things that do not fit with this scenario.    
+Task 7: Comparative analysis specifically looking for structural rearrangements and recombination events.
+Lets think we have a pipeline that gives all the structural rearrangements and recombination events in a given genome, what do we want to do with it? What do we want find here? Is there way to filter them? Or is there any question that we need to ask from the result of this analysis that we can program?            
+Simone: here the main question is to understand how much recombination occurs and whether events are scattered randomly across the chromosomes or confined to specific regions. Thus, the first answer we want is the frequency and distribution of recombination events. I don’t know if you already have an idea of how to look systematically for recombination. One possibility is to build phylogenetic trees from all genes (ordered physically in the 8 chromosomes) and see if certain isolates cluster differently when one moves from one gene to the next. There are also other methods, I am keen to discuss this with you. 
+
+Nima: I think we need to discuss this further. OK the main task is to calculate the frequency and distribution of  recombination events within the isolates and then look at the distributions within all the isolates. I think I need to explore this more and figure out how we should do it. It seems there are some standard techniques. I think we should look for similar research and task in different organism study and just do whatever others have done. If I find a paper that similar work has been done I pass to you, please do the same in case if you found similar thing. 
+Simone: largely agree, we should not reinvent the wheel. This is a rather common question, and we can find inspiration and perhaps already available tools from the literature.
+Task 8: Comparative analysis of hyper-variable regions (e.g., regions containing simple sequence repeats) with the goal of identifying markers useful for classical genotyping studies of isolates.                                                                                                     
+Would you describe this? Please describe all the steps that need to happen. I think once you mentioned we should find all the repeats, what do we need to do with that? Imagine we find all the repeats region, what else shall we do with the result? What does it tell us? 
+Simone: here we should start by recalling that what we know about population genetics of these parasites come from genotyping at loci containing simple repeats (mini- and micro-satellites). However, there is no consensus on which loci are more informative and the goal will be to have the smallest number while maintaining the discrimination power.
+This is why it is important to identify those regions and then to look for variation among isolates.
+
+Nima: Ok the first step is clear, we should find all the mini- and micro-satellites for all the isolates. I guess after that basically you would want to find the differences and variations among the isolates. And then what is this variation in mini- and micro-satellites can be translated to? I look at a human genome paper, and it seems that frequency of mini- and micro-satellites in some regions can lead to a disease. But in case of parasite what does this potentially tell us?
+Simone: no, in parasites you don’t expect such a link. What we should do is use comparative genomics data (so, all the genome) to see which mini- or micro-satellites is more variable among the sequence genomes, guessing that these will be the real hypervariable ones (and if one design PCR primers and test other isolates, there will be genetic variability to exploit). This is really applied stuff, but it is of interest for those who need to type parasites in, e..g., outbreak situation or for molecular epidemiology. 
+Task 9: Cluster analysis of samples originating from outbreaks, the goal being to define criteria useful to distinguish outbreak samples from unlinked, sporadic cases.
+Would you describe this? Please describe all the steps that need to happen.
+
+Simone: this comes from the work and objectives of WP4/7. Ideally, we would like to understand first how much variability exist among unrelated cases of cryptosporidiosis and to compare with the variability among clearly related (outbreak) cases.Can we define a threshold? Can we develop tools (algorithms) that can inform us about the relatedness of new cases? This is the scenario, but honestly, I don’t know how to translate this into a practical approach. I would suggest we get in touch with people from WP4/7 and see how they are approaching the question.
+
+Nima: I think we need further discussion for this and as you mentioned we may need to involve others to see how they are doing this.
+Simoen: Sure, there is a WP4/7 meeting on November 6 in Copenhagen. I will try to attend.
+
+
+Any other analysis that you wish to be done?
+
+
+
+
+
+
 Project TODO Actions
 Create a volume in COMPARE-VM-2 for parasite
 Move the fastq files into COMPARE-VM-2
