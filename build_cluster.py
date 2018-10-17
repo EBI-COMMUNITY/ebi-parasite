@@ -1,4 +1,5 @@
-#! /analysis/xin/parasite/bin/python/bin/python
+#! /analysis/xin/parasite/bin/python/bin/python 
+
 import matplotlib
 matplotlib.use('Agg')
 import pandas as pd
@@ -18,6 +19,7 @@ import sys
 from utilities import command
 from utilities import fileutils
 from utilities import properties
+from utilities import misc
 from collections import defaultdict
 import glob
 from docutils.nodes import title
@@ -27,74 +29,50 @@ def get_args():
     global prop
     global properties_file
     global genome_name    
-    global genome_fasta 
     global vcf_file_pattern
     global vcf_files
     global mapping_file
-    global title
+    global image_title
     global prefix
                        
     # Assign description to the help doc
     parser = argparse.ArgumentParser(description='Script build phylogenetic tree and dendragram for the defined group of vcf files from the same genome')
     parser.add_argument('-p', '--properties_file', type=str, help='Please provide the properties file.', required=True)
-    parser.add_argument('-g', '--genome_name', type=str, help='''if "C. hominis" or "C. parvum" will be used as the genome, 
-                                                                 please provide "ch" for "C. hominis" or "cp" for "C. parvum"''', 
-                                                                 required=False)  
-    parser.add_argument('-f', '--genome_fasta', type=str, help='''Please provide the directory for the genome fasta file, 
-                                                                 if "ch" or "cp" is not the genome name.''', 
-                                                                 required=False)
+    parser.add_argument('-g', '--genome_name', type=str, help='''Please provide the genome name, only with those obtained from genome_list.txt''',
+                        required=True)
     parser.add_argument('-v', '--vcf_file_pattern', type=str, help='''Please provide the vcf files' pattern with the full path,
                                                                   vcf files must ended with ".vcf" ''', required=True)      
     parser.add_argument('-m', '--mapping_file', type=str, help='''Please provide the mapping file path, which contains one column of 
-                                                                read_ID from vcf file and one column of its corresponding label on the tree''', required=False)
-    parser.add_argument('-t', '--title', type=str, help='''Please provide the title of the image''', required=False)
+                                                                read_ID from vcf file and one column of its corresponding label on the tree branch,
+                                                                otherwise, the read_ID will be labeled on the tree branch''', required=False)
+    parser.add_argument('-t', '--title', type=str, help='''Please provide the title of the image''', required=True)
     parser.add_argument('-pre', '--prefix', type=str, help='Please provide the prefix for the output file.', required=True)  
 
     # check args
     args = parser.parse_args()
     fi=fileutils()
     fi.check_exist(args.properties_file)
-    if args.genome_name is not None and not args.genome_name=="ch" and not args.genome_name=="cp" :
-        print "genome name need to be ch or cp"
-        sys.exit(1)      
-    if args.genome_fasta is not None:            
-        fi.check_exist(args.genome_fasta)   
-    if args.mapping_file is not None:            
-        fi.check_exist(args.mapping_file)      
-    vcf_files=glob.glob(args.vcf_file_pattern)
-    vcf_request_pattern="^.*/?(.*?).vcf$"
-    for vcf_file in vcf_files:
-        if not re.search(vcf_request_pattern, vcf_file):
-            print "vcf_file not end with .vcf"
-            sys.exit(1)
+    properties_file=args.properties_file
+    prop=properties(properties_file)
+    if args.genome_name not in (line.rstrip() for line in open(prop.get_attrib("available_genomes")).readlines()) and args.genome_name!="cryptosporidium_hominis":
+        misc.my_exit("{} is not available, please try another genome".format(args.genome_name))
+    if not re.search(".vcf$",args.vcf_file_pattern):
+        misc.my_exit("vcf_file_pattern need to end up with .vcf")
+    vcf_file_pattern=args.vcf_file_pattern
+    vcf_files=glob.glob(vcf_file_pattern)
     fi.check_files_exist(vcf_files)  
     
     # define variables         
-    properties_file=args.properties_file    
-    prop=properties(properties_file)
-    if args.genome_name is not None:
-        genome_name=args.genome_name
-    if args.genome_fasta is not None:    
-        genome_fasta=args.genome_fasta   
-    else:
-        if args.genome_name is None:
-            print "If no genome_fasta provided, genome name must be provided as ch or cp."
-            sys.exit(1)
-        else:
-            genome_fasta=prop.get_attrib(genome_name+"_fasta")
-    vcf_file_pattern=args.vcf_file_pattern
-    if args.mapping_file is not None:
-        mapping_file=args.mapping_file
-    if args.title is not None:
-        title=args.title
+    genome_name=args.genome_name
+    mapping_file=args.mapping_file
+    image_title=args.title
     prefix=args.prefix   
     
     print "properties_file:",properties_file
     print "genome_name:",genome_name
-    print "genome_fasta:",genome_fasta 
     print "vcf_file_pattern:",vcf_file_pattern
     print "mapping_file:",mapping_file
-    print "title:",title
+    print "title:",image_title
     print "prefix:",prefix
 
 def get_variant_str():
@@ -137,8 +115,8 @@ def generate_cluster3():
 
 def create_image_input_file():
     global dendra_fname
-    get_mapping_dict()
-    # create *_for_dendra for generating image
+    if mapping_file is not None:
+        get_mapping_dict()
     dendra_fname=cluster_fname+'_for_dendra' 
     cluster_f_list=[]
     fh_cluster=open(cluster_fname,'r')
@@ -161,7 +139,8 @@ def create_image_input_file():
             if not i==1:
                 if i==0: # get the ID's full name
                     cols[i]=cols[i].split(".")[0]    
-                    cols[i]=mapping_dict[cols[i]]
+                    if mapping_file is not None:
+                        cols[i]=mapping_dict[cols[i]]
                 outline=outline+cols[i]+","
         outline=outline.rstrip(",")       
         fh_dendra.write(outline) 
@@ -170,7 +149,7 @@ def create_image_input_file():
     
 def generate_images():
     global out_image_fname
-    out_image_fname=title+'.dendrogram.png'
+    out_image_fname=prefix+".dendrogram.png"
     df = pd.read_csv(
         filepath_or_buffer=dendra_fname,
     )
@@ -179,9 +158,9 @@ def generate_images():
     Z=hierarchy.linkage(df, 'ward')
     fig = plt.figure(figsize=(11.69,8.27),dpi = 100)        
     hierarchy.dendrogram(Z, leaf_font_size=8, orientation="left", labels=df.index,get_leaves=True)
-    plt.title(title,fontsize=18)     
+    plt.title(image_title,fontsize=18)     
     plt.tight_layout()   
-    plt.savefig(title+'.dendrogram.png')
+    plt.savefig(out_image_fname)
         
 def initiate():
     print "initiating..."
@@ -189,14 +168,20 @@ def initiate():
     global indir
     global outdir
     global type        
+    global genome_fasta
     subdir="cluster"
     workdir=prop.workdir+"/"+subdir 
     indir=workdir+"/in/"
     outdir=workdir+"/out/"
     fi.create_processing_dir(indir)
     fi.create_processing_dir(outdir)
+    if genome_name=="cryptosporidium_hominis":
+        genome_fasta=prop.get_attrib("ch_fasta")
+    else:    
+        genome_fasta=misc.download("fasta",genome_name,"dna")
     for file_in in ([genome_fasta,mapping_file]):
-        fi.copy_file_to_destdir(file_in,indir)
+        if file_in is not None:
+            fi.copy_file_to_destdir(file_in,indir)
     fi.change_dir(workdir)    
 
 def execute():
@@ -213,6 +198,7 @@ def post_process():
 
 if __name__ == '__main__':
     getVar = lambda searchList, ind: [searchList[i] for i in ind]    
+    misc=misc()
     get_args()
     print "\n","Properties attributes:"
     print prop.__dict__
