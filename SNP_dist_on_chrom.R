@@ -1,9 +1,9 @@
 #!/usr/bin/env Rscript
 
+# version 1, 28 Nov, 2019 by Xin Liu
+
 library(vcfR)
-#library(poppr)
 library(ape)
-#library(RColorBrewer)
 library(optparse)
 
 # Function to plot distribution of SNP 

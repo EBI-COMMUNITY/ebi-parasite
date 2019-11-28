@@ -1,5 +1,7 @@
 #!/usr/bin/env Rscript
 
+# version1 , 28 Nove 2019 by Xin Liu
+
 library(ape)
 library(RColorBrewer)
 library(ggrepel)
