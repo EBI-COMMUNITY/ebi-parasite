@@ -24,7 +24,8 @@ def get_args():
     filter_dict={}
         
     # Assign description to the help doc
-    parser = argparse.ArgumentParser(description='Script for getting SNP from bam files using gatk')
+    parser = argparse.ArgumentParser(description='''Script merging gvcf files, seperating into 
+                                                  SNP and INDEL,and then filtering if requested''')
     parser.add_argument('-p', '--properties_file', type=str, help='''Please provide the properties file, 
                                                                      which including the paths of workdir''', 
                                                              required=True)

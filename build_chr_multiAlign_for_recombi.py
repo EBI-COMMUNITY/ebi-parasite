@@ -137,11 +137,10 @@ def build_multiAlign_file():
     global out_xmfa_files
     for bam_file in bam_files:
         # run pilon, and this will create a fasta file
-        #command("samtools index {} {}.bai".format(bam_file,bam_file)).run_comm(0)
+        command("samtools index {} {}.bai".format(bam_file,bam_file)).run_comm(0)
         pilon_out_file = "{}/{}_{}".format(workdir, prefix, os.path.basename(bam_file).rstrip(".bam"))
-        #command("pilon --genome {} --bam {} --output {} --vcf".format(REF_FASTA, bam_file, pilon_out_file)).run_comm(0)
+        command("pilon --genome {} --bam {} --output {} --vcf".format(REF_FASTA, bam_file, pilon_out_file)).run_comm(0)
     get_chr_fasta()
-    #chr_fastas=["forSimone_LN877948.fa","forSimone_LN877949.fa","forSimone_LN877950.fa","forSimone_LN877951.fa","forSimone_LN877952.fa","forSimone_LN877953.fa","forSimone_LN877954.fa","forSimone_LN877947.fa"]
     for chr_fasta in chr_fastas:
         chr_fasta_prefix=os.path.basename(chr_fasta).replace(".fa","")
         out_xmfa_file=chr_fasta_prefix+".xmfa"

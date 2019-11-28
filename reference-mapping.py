@@ -27,7 +27,9 @@ def get_args():
     global runID
 
     # Assign description to the help doc
-    parser = argparse.ArgumentParser(description='Script mapping short reads to reference genomes using BWA or bowtie2')
+    parser = argparse.ArgumentParser(description='''Script mapping short reads to reference genomes
+                                                    using BWA or bowtie2, with the following statistics 
+                                                    summary files created by fastQC, qualiMap, and multipleQC''')
     parser.add_argument('-p', '--properties_file', type=str, help='Please provide the properties file', required=True)
     parser.add_argument('-t', '--mapping_tool', type=str, help='Please choose mapping tool, bwa or bowtie2', required=True)
     parser.add_argument('-g', '--genome_name', type=str, help='''Please provide the genome name
