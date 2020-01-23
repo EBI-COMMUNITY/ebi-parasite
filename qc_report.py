@@ -40,9 +40,8 @@ def get_args():
 def multiQC():  
     global multiQC_in_files
     global multiQC_files_str
-    multiQC_in_files = []
     multiQC_files_str = "multiqc -f"
-    assembly_p = "assembly/qc/{}*/report.tsv".format(prefix)
+    assembly_p = "assembly/qc/{}_*/report.tsv".format(prefix)
     fastQC_p = "reference_mapping/qc/{}/*fastqc.zip".format(prefix)
     #bowtie2_p = "reference_mapping/qc/{}/*.log".format(prefix) 
     picard_p = "reference_mapping/qc/{}/*.bam".format(prefix)
@@ -60,12 +59,8 @@ def multiQC():
 def get_multiQC_files_str_and_cpToIn(qc_p, multiQC_files_str):
     qc_fullP_p = "{}/../{}".format(workdir, qc_p)
     qc_files = glob.glob(qc_fullP_p)
-    print ("in_files="+qc_fullP_p)
     if len(qc_files) != 0:
         multiQC_files_str += " " + qc_fullP_p
-        for qc_file in qc_files:
-            multiQC_in_files.append(qc_file)
-            #fi.copy_file(qc_file,indir)
     return multiQC_files_str
 
 def initiate():
@@ -89,9 +84,6 @@ def execute():
 def post_process():
     print ("post_processing...")
     fi.copy_file("{}.multiQC.html".format(prefix),outdir)
-    for multiQC_in_file in multiQC_in_files:
-        fi.copy_file(multiQC_in_file,outdir)
-
 
 if __name__ == '__main__':
     get_args()

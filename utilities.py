@@ -131,15 +131,29 @@ class fileutils():
         try: 
             shutil.copy(srcfile, destfile)
             print ("srcfile={}\ndestfile={}".format(srcfile, destfile))
-            time.sleep(15)
+            time.sleep(3)
         except OSError as err:
             sys.stderr.write('OS error: {}'.format(err))
             raise
 			
     def copy_file_to_destdir(self,srcfile,destdir):
-        name=os.path.basename(srcfile)
-        dest_file=os.path.join(destdir, name)
-        self.copy_file(srcfile,dest_file)	
+        try:
+            name=os.path.basename(srcfile)
+            dest_file=os.path.join(destdir, name)
+            self.copy_file(srcfile,dest_file)	
+        except OSError as err:
+            sys.stderr.write('OS error: {}'.format(err))
+            raise
+
+    def copy_dir(self, srcdir, destdir):
+        try:
+            if os.path.exists(destdir):
+                shutil.rmtree(destdir)
+                shutil.copytree(srcdir, destdir)
+                print ("srcdir={}\ndestdir={}".format(srcdir, destdir))
+        except OSError as err:
+            sys.stderr.write('OS error: {}'.format(err))
+            raise
 
     def add_file_prefix(self,source_fpath,prefix):    	
         try:
@@ -149,7 +163,6 @@ class fileutils():
             sys.stderr.write('OS error: {}'.format(err)) 
             raise
 
-    
     def copy_file_add_prefix(self,source_fpath,outdir,prefix):
         self.copy_file_to_destdir(source_fpath,outdir)
         source_file2=os.path.join(outdir,os.path.basename(source_fpath))		

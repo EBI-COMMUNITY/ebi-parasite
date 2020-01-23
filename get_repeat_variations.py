@@ -13,7 +13,6 @@ from utilities import properties
 from utilities import misc
 from utilities import command
 from collections import defaultdict
-from repeats_variation import strv
 import numpy as np
 
 def get_args():    
@@ -213,15 +212,14 @@ def ref_region_analsis():
     sixtyNstr = get_60Nstr()
     ref_exp_region_dict = {}
     ann_dict = {}
+    
     # tandem repeats finder to detect tandem repeat in genome fasta file,output is TRF_out_name 
     # parameter details, see *1, output table explanation, see *2
     command("trf {} 2 7 7 80 10 50 500 -f -d -m".format(REF_FASTA)).run_comm(0)
     # convert it to the format that STRViper will read in, output explanation see *2, not only parsing, 
     # but also skip some regions as better quality regions related
     ## define file names
-    ref_fasta_pattern = "^(./)?(.*?)$"
-    ref_fasta_fname = re.findall(ref_fasta_pattern, REF_FASTA)[0][1]
-    trf_out_name = ref_fasta_fname+".2.7.7.80.10.50.500.dat"
+    trf_out_name = os.path.basename(REF_FASTA)+".2.7.7.80.10.50.500.dat"
     fName_str = "{}.trf.str".format(genome_name)
     exp_ref_region_fname = "{}.ref.exp.regions".format(prefix)
     fhout_exp_ref_region = open (exp_ref_region_fname, "w")
@@ -297,10 +295,10 @@ def exp_region_analysis(vcf_fname_key, blast_out_fname, consensus_fasta_name):
         (gene_name, cds) = ann_dict[ref_region]
         ref_key = "{}\t{}\t{}\t{}\t{}\t{}\t{}".format(ref_region, ref_str_seq, str_unit_len, 
                                                       ref_unit_num, ref_len, gene_name, cds)
-        [ref_region_fasta_seq,ref_region_seq]=get_region_seq(ref_region,REF_FASTA)
-        iso_region_seq = get_region_seq(iso_region,consensus_fasta_name)[1]
-        print ("iso_region_seq="+iso_region_seq+"\nref_region_seq="+ref_region_seq)
-        if ref_region_seq != iso_region_seq:
+        #[ref_region_fasta_seq,ref_region_seq]=get_region_seq(ref_region,REF_FASTA)
+        #iso_region_seq = get_region_seq(iso_region,consensus_fasta_name)[1]
+        #print ("iso_region_seq="+iso_region_seq+"\nref_region_seq="+ref_region_seq)
+        if str(ref_len) != str(iso_repeat_region_len):
             ## diff_out_indi_dict holding all individaul repeat regions info, 
             ## including all ref regions and iso unit number and vcf file name
             diff_out_indi_dict[ref_key][vcf_fname_key] = (iso_unit_num_str, if_multi_best_hit)
@@ -322,11 +320,11 @@ def vcf_analysis():
                                                                                vcf_fname_key)).run_comm(0)
         blast_out_fname = vcf_fname_key+".ref.exp.blast_out"
         command("blastn -query {} -db {}.DBblast -dust no -outfmt 7 -max_target_seqs 1 -out {}".format(ref_exp_region_fasta, vcf_fname_key, blast_out_fname)).run_comm(0)
-        for map_key in mapping_dict.keys():
-            if re.search(map_key, consensus_fasta_name):
-                iso_name = mapping_dict[map_key]
-        if iso_name == "NA":
-            iso_name = re.findall("(.*?)_IbA10G2", consensus_fasta_name)[0]
+        #for map_key in mapping_dict.keys():
+        #    if re.search(map_key, consensus_fasta_name):
+        #        iso_name = mapping_dict[map_key]
+        #if iso_name == "NA":
+           # iso_name = re.findall("(.*?)_IbA10G2", consensus_fasta_name)[0]
         exp_region_analysis(vcf_fname_key, blast_out_fname, consensus_fasta_name)
 
 def get_diff_out_dict():
@@ -336,7 +334,7 @@ def get_diff_out_dict():
     multi_align_dict = defaultdict(lambda: defaultdict(lambda: defaultdict(str)))
     ## get average diff
     ## "variation_num" is how many different repeat region lenghthes were found
-    for key1 in diff_out_indi_dict.keys():
+    for key_ref in diff_out_indi_dict.keys():
         diff_sum = 0.0
         out_isos = ""
         if_multi_best_hit_str = ""
@@ -344,8 +342,8 @@ def get_diff_out_dict():
         multi_best_hit_N_num = 0
         multi_best_hit_Y_num = 0
         num_of_variation_dict = {}
-        for vcf_file_key in diff_out_indi_dict[key1].keys():
-            [iso_unit_num_str, multi_best_hit] = diff_out_indi_dict[key1][vcf_file_key]
+        for vcf_file_key in diff_out_indi_dict[key_ref].keys():
+            [iso_unit_num_str, multi_best_hit] = diff_out_indi_dict[key_ref][vcf_file_key]
             num_of_variation_dict[iso_unit_num_str] = 1
             if  multi_best_hit == 'N':
                 multi_best_hit_N_num += 1
@@ -355,18 +353,24 @@ def get_diff_out_dict():
         variation_num_str = str(variation_num)
         multi_best_hit_N_str = str(multi_best_hit_N_num)
         multi_best_hit_Y_str = str(multi_best_hit_Y_num)
-        closest_info = closest_dict[key1.split("\t")[0]] ## closest_dict[ref_region]
-        for vcf_file_key in sorted(diff_out_indi_dict[key1].keys()):
-            (repeat_len, multi_best_hit) = diff_out_indi_dict[key1][vcf_file_key]
-            diff_out_dict[key1 + "\t" + closest_info][vcf_file_key] = (repeat_len, variation_num_str, 
+        closest_info = closest_dict[key_ref.split("\t")[0]] ## closest_dict[ref_region]
+        diff_out_dict[variation_num_str][key_ref + "\t" + closest_info] = ( 
                                                                        multi_best_hit_N_str, 
                                                                        multi_best_hit_Y_str)
+def calculate_rank(inlist):
+    rank_dict={}
+    rank=1
+    for num_str in sorted(inlist,key=int):
+        if num_str not in rank_dict:
+            rank_dict[num_str]=rank
+            rank=rank+1
+    return rank_dict
 
 def write_output():
     global output_summary_fpath
     output_summary_fpath = "{}/{}.summary".format(workdir, prefix)
     head_line_format = ""
-    for i in range (0, 18):
+    for i in range (0, 20):
         head_line_format += "{}\t"
     head_line_format = head_line_format.rstrip("\t")
     head_line = head_line_format.format("ref_str_region", "str_unit_seq", "ref_str_unit_len", 
@@ -376,13 +380,18 @@ def write_output():
                                         "closest_repeat_unit_seq:unit_length:unit_num", "closest_repeat_distrance",
                                         "closest_gene_chromosome", "closest_gene_start", "closest_gene_end",
                                         "closest_gene_name", "closest_gene_distrance",
-                                        "var_iso_num" 
+                                        "repeat_region_var_rank", 
+                                        "iso_number_with_single_best_hit", "iso_number_with_multi_best_hit" 
                                         )
     fhout = open(output_summary_fpath, "w")
     fhout.write(head_line+"\n")
-    for key1 in diff_out_dict.keys():
-        var_iso_num = len(diff_out_dict[key1].keys())
-        fhout.write("{}\t{}\n".format(key1, str(var_iso_num)))
+    repeat_var_rank_dict = calculate_rank(diff_out_dict.keys())
+    for variation_num_str in sorted(diff_out_dict.keys(),key=int):
+        for key_ref in sorted(diff_out_dict[variation_num_str].keys()):
+            (multi_best_hit_N_num, multi_best_hit_Y_num) = diff_out_dict[variation_num_str][key_ref]
+            fhout.write("{}\t{}\t{}\t{}\n".format(key_ref, str(repeat_var_rank_dict[variation_num_str]),
+                                                              multi_best_hit_N_num,
+                                                              multi_best_hit_Y_num ))
     fhout.close()
 
 def replace_the_first_line(ori_str, new_first_line):
@@ -404,11 +413,14 @@ def get_region_seq(region, seq_file):
     region_fasta_seq=command("samtools faidx -r {} {}".format(tmp_region_fname,
                           seq_file)).run_comm(1).decode("utf-8").rstrip()
     if int(region_start)<int(region_end):
-        return [region_fasta_seq,get_seq_from_fasta(region_fasta_seq)]
+        return region_fasta_seq
     else:
-        region_fasta_revCom_seq=Seq(region_fasta_seq).reverse_complement()
-        print ("region_fasta_revCom_seq="+region_fasta_revCom_seq)
-        return [region_fasta_revCom_seq,get_seq_from_fasta(region_fasta_revCom_seq)]
+        tmp_fasta_file="tmp.fasta"
+        tmp_rev_fasta_file="tmp.rev.fasta"
+        command("echo \"{}\" >{}".format(region_fasta_seq, tmp_fasta_file)).run_comm(0)
+        command("revseq {} -reverse -complement -outseq {}".format(tmp_fasta_file,tmp_rev_fasta_file)).run_comm(0)
+        with open (tmp_rev_fasta_file, "r") as filein:
+            return filein.read().rstrip("\n") 
 
 def multi_align():
     #eon_info_key = "{}_{}N{}Y".format(ref_exp_region, multi_best_hit_N_str, multi_best_hit_Y_str)
@@ -422,10 +434,10 @@ def multi_align():
         command("echo {} >{}".format(ref_e_region, tmp_region_fname)).run_comm(0)
         command("samtools faidx -r {} {} >{}".format(tmp_region_fname, REF_FASTA, out_fasta_fname)).run_comm(0)
         command("sed -i \"1s/.*/>ref_{}/\" {}".format(ref_e_region, out_fasta_fname)).run_comm(0)
-        for vcf_file_key in multi_align_indi_dict[ref_info].keys():
+        for vcf_file_key in sorted(multi_align_indi_dict[ref_info].keys()):
             (iso_e_region, iso_concensus_fasta) = multi_align_indi_dict[ref_info][vcf_file_key]
             ## write isolates to fasta file
-            iso_fasta_lines_str = get_region_seq(iso_e_region,iso_concensus_fasta)[0]
+            iso_fasta_lines_str = get_region_seq(iso_e_region,iso_concensus_fasta)
             iso_fasta_lines = replace_the_first_line(iso_fasta_lines_str, ">{}_{}".format(vcf_file_key, iso_e_region))
             command("echo \"{}\" >> {}".format(iso_fasta_lines, out_fasta_fname)).run_comm(0)
         ## do alignment for each expanded region
@@ -442,7 +454,7 @@ def run():
     UP_DOWN_SEQ_LEN = 100
     REF_FASTA = "{}/../ref/{}.fasta".format(workdir, genome_name)
     get_chrom_len() # get all individual chr len
-    mapping_sample() 
+    #mapping_sample() 
     get_info_from_gff3() # get gff3_dict[chrom][mol_type][(start,end)] = gene_name
     ref_region_analsis()
     vcf_analysis()

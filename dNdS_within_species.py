@@ -16,7 +16,7 @@ import os
 
 def get_args():    
     global properties_file
-    global genome
+    global genome_name
     global prefix
     global vcf_file_pattern
     global mapping_file
@@ -54,7 +54,7 @@ def get_args():
         MISC.my_exit("vcf_file_pattern need to end up with .vcf")
     if args.var_type!="SNP" and args.var_type!="INDEL":
         MISC.my_exit("var_type must be SNP or INDEL")
-    genome=args.genome_name
+    genome_name=args.genome_name
     vcf_file_pattern=args.vcf_file_pattern
     var_type=args.var_type
     if_indel=0
@@ -64,7 +64,7 @@ def get_args():
     mapping_file=args.mapping_file
     
     print ("properties_file:",properties_file)
-    print ("genome:",genome)
+    print ("genome_name:",genome_name)
     print ("vcf_file_pattern:",vcf_file_pattern)
     print ("var_type:",var_type)
     print ("mapping_file:",mapping_file)
@@ -103,7 +103,7 @@ def run_snpEff():
     global ann_vcf_fpaths
     ann_vcf_fpaths=[]
     ann_stat_fpaths=[]
-    snpeff_db=snpEff_db(properties_file,genome)    
+    snpeff_db=snpEff_db(properties_file,genome_name)    
     snpeff_db.build_snpeff_db()
     for vcf_fpath in all_vcf_fpaths:
         runID=MISC.get_runID(vcf_fpath)
@@ -115,24 +115,25 @@ def run_snpEff():
         else:           
             ann_stat_fpath=runID+".ann_stats"
         ann_stat_fpaths.append(ann_stat_fpath)
-        command("snpEff -c snpEff.config {} {} -csvStats {} > {}".format(genome, vcf_fpath, ann_stat_fpath, ann_vcf_fpath)).run(0);
+        command("snpEff -c snpEff.config {} {} -csvStats {} > {}".format(genome_name, vcf_fpath, ann_stat_fpath, ann_vcf_fpath)).run(0);
 
 def get_genes_from_gff(): 
     global genome_gene_dict
     genome_gene_dict={}
     pattern="ID=(.*?);"
-    file_gff=open(MISC.download(workdir,"gff3",genome,""),'r')
-    for line in file_gff:
-        line=line.rstrip("\n")
-        if not line.startswith("#") and line.split("\t")[2]=='gene':
-            if re.search(pattern,line):
-                gene=re.findall(pattern,line)[0]
-                (chro,start,end)=getVar(line.split("\t"),[0,3,4])
-                length=str(int(end)-int(start))
-                genome_gene_dict[gene]=[chro,start,end,length]
-            else:
-                print ("ERROR: there is no gene name in {}".format(line))
-                sys.exit(1)
+    REF_GFF="{}/../ref/{}.gff".format(workdir, genome_name)
+    with open (REF_GFF,"r") as gff_fhin:
+        for line in gff_fhin:
+            line=line.rstrip("\n")
+            if re.search("\w+",line) and not line.startswith("#") and line.split("\t")[2]=='gene':
+                if re.search(pattern,line):
+                    gene=re.findall(pattern,line)[0]
+                    (chro,start,end)=getVar(line.split("\t"),[0,3,4])
+                    length=str(int(end)-int(start))
+                    genome_gene_dict[gene]=[chro,start,end,length]
+                else:
+                    print ("ERROR: there is no gene name in {}".format(line))
+                    sys.exit(1)
 
 def get_sum(my_map):
     sum=0
@@ -170,14 +171,12 @@ def analysis_ann_files():
     snp_hash=defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(str)))))))
     ann_pattern='ANN=(.*?)[\s;]'
     for ann_vcf_fpath in sorted(ann_vcf_fpaths):
-        if mapping_file is not None and ann_vcf_fpath in mirror.keys():        
-            print ("working on "+ann_vcf_fpath)
-            sample_name=mirror[ann_vcf_fpath]
-        elif mapping_file is None:
-            print (ann_vcf_fpath)
-            sample_name=re.findall("(.*?)\.",ann_vcf_fpath)[0]
+        runID=MISC.get_runID(ann_vcf_fpath)
+        if mapping_file is not None :        
+            sample_name=mirror[runID]
         else:
-            continue
+            sample_name=runID
+        print ("here working on "+ann_vcf_fpath)
         sample_names.append(sample_name)
         infile=open(ann_vcf_fpath, 'r')
         for line in infile:
@@ -217,7 +216,6 @@ def write_gene_matrix():
             for i in range(0,2*len(sample_names)+4):
                 fileout.write("\tNA")
             fileout.write("\n")
-            #print gene+" no variation"
         else:
             gene_variant_dict[gene]["dN"]=0
             gene_variant_dict[gene]["dS"]=0
@@ -433,8 +431,8 @@ def initiate():
     all_vcf_fpaths=glob.glob(vcf_file_pattern)
     FI.create_processing_dir(indir)
     FI.create_processing_dir(outdir)
-    #for file_in in (all_vcf_fpaths): ### ? GFF file
-       #FI.copy_file_to_destdir(file_in,indir)
+    for file_in in (all_vcf_fpaths): ### ? GFF file
+        FI.copy_file_to_destdir(file_in,indir)
     FI.change_dir(workdir)    
 
 def execute():
@@ -476,5 +474,5 @@ if __name__ == '__main__':
     #post execution code
     post_process()
 
-
+    print (os.path.realpath(__file__)+" DONE")
 
