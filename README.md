@@ -9,21 +9,21 @@ In crypto genome analysis, the first command "download" prepares the reference f
 
 The input fastq files can be found in https://www.ebi.ac.uk/ena/data/view/PRJEB15112.
 In github, you can find the example of the following files: 
-  properties.txt, 
-  map_hominis_genotype_A10G2.txt
-  28Iso_map_for_visua.txt
-  hominis_go_26Jul2019.csv
+ - properties.txt
+ - map_hominis_genotype_A10G2.txt
+ - 28Iso_map_for_visua.txt
+ - hominis_go_26Jul2019.csv
 
 #### Commands
 1. [download](#download)
-2. [quality control](#quality control)
+2. [quality_control](#quality control)
 3. [assembly](#assembly)
-4. [reference mapping](#reference mapping)
-5. [variation (snp and indel) call by using GATK](#variation (snp and indel) call by using GATK)
-6. [dNdS analysis](#dNdS analysis)
-7. [short repeats variation analysis](#short repeats variation analysis)
-8. [multiple alignment for all individual chromosomes](#multiple alignment for all individual chromosomes) 
-9. [variation visualization](#variation visualization)
+4. [reference_mapping](#reference mapping)
+5. [variation_(snp_and_indel)_call_by_using_GATK](#variation (snp and indel) call by using GATK)
+6. [dNdS_analysis](#dNdS analysis)
+7. [short_repeats_variation_analysis](#short repeats variation analysis)
+8. [multiple_alignment_for_all_individual_chromosomes](#multiple alignment for all individual chromosomes) 
+9. [variation_visualization](#variation visualization)
 10. [multiQC](#multiQC)               
 
 ### download 
