@@ -16,14 +16,14 @@ In github, you can find the example of the following files:
 
 #### Commands
 1. [download](#download)
-2. [quality_control](#quality control)
+2. [QC](#quality control)
 3. [assembly](#assembly)
-4. [reference_mapping](#reference mapping)
-5. [variation_(snp_and_indel)_call_by_using_GATK](#variation (snp and indel) call by using GATK)
-6. [dNdS_analysis](#dNdS analysis)
-7. [short_repeats_variation_analysis](#short repeats variation analysis)
-8. [multiple_alignment_for_all_individual_chromosomes](#multiple alignment for all individual chromosomes) 
-9. [variation_visualization](#variation visualization)
+4. [mapping](#reference mapping)
+5. [variation](#variation (snp and indel))
+6. [dNdS](#dNdS analysis)
+7. [repeats](#short repeats variation analysis)
+8. [mAlignment](#multiple alignment for all individual chromosomes) 
+9. [visualization](#variation visualization)
 10. [multiQC](#multiQC)               
 
 ### download 
@@ -104,7 +104,7 @@ output files:
  - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.log
  - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.multiQC.html
 
-### variation (snp and indel) call by using GATK:
+### variation (snp and indel)
 
 The script creates filtered or unfiltered SNP and INDEL vcf and gvcf files
 from bam files using gatk, and then creates statistics summary by using
