@@ -3,7 +3,7 @@
 
 #### General introduction of how to use the Crypto analysis pipeline
 
-In crypto genome analysis, the first command "download" prepares the reference file, so need to be run firstly. After that, You can start to the basis analsis (command 2-5) for each individual isolate genome. We recommend you always run command 2 "quality control" as the first step. Command 3 "assembly" is a relatively independent step, while command 2,4,5 need to be run sequentially. After all the isolate genomes go through basis analysis individually, they will be ready for the independent advanced analysis (command 6-10) as a whole. 
+In crypto genome analysis, the first command "download" prepares the reference file, so need to be run firstly. After that, you can start to the basis analsis (command 2-5) for each individual isolate genome. We recommend you always run command 2 "quality control" as the first step. Command 3 "assembly" is a relatively independent step, while command 2,4,5 need to be run sequentially. After all the isolate genomes go through basis analysis individually, they will be ready for the independent advanced analysis (command 6-10) as a whole. 
 
 #### File examples
 
@@ -19,7 +19,7 @@ In crypto genome analysis, the first command "download" prepares the reference f
 2. [quality control](#quality_control)
 3. [assembly](#assembly)
 4. [reference mapping](#reference_mapping)
-5. [variation](#variation_(snp_and_indel))
+5. [variation analysis](#variation_analysis)
 6. [dNdS analysis](#dNdS_analysis)
 7. [short repeats variation analysis](#short_repeats_variation_analysis)
 8. [multiple alignment](#multiple_alignment_for_all_individual_chromosomes) 
@@ -104,7 +104,7 @@ output files:
  - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.log
  - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.multiQC.html
 
-### variation_(snp_and_indel)
+### variation_analysis
 
 The script creates filtered or unfiltered SNP and INDEL vcf and gvcf files
 from bam files using gatk, and then creates statistics summary by using
