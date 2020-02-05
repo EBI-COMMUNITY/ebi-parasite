@@ -29,28 +29,28 @@ In github, you can find the example of the following files:
 ### download 
 
 The scripts downloads the latest genome dna fasta and gff3 file and index fasta file:
-
+'''
 download_and_index_genome_files.py -p $full_dir/properties.txt -g cryptosporidium_hominis
-
+'''
 output files:
-$workdir/ref/$genome_name+".fasta"
-$workdir/ref/$genome_name+".gff3"
-$workdir/ref/$genome_name+".fasta.fai"
-$workdir/ref/$genome_name+".fasta.pac"
-$workdir/ref/$genome_name+".fasta.bwt"
-$workdir/ref/$genome_name+".fasta.ann"
-$workdir/ref/$genome_name+".fasta.amb"
-$workdir/ref/$genome_name+".fasta.sa"
-$workdir/ref/$genome_name+".*.bt2"
+-$workdir/ref/$genome_name+".fasta"
+-$workdir/ref/$genome_name+".gff3"
+-$workdir/ref/$genome_name+".fasta.fai"
+-$workdir/ref/$genome_name+".fasta.pac"
+-$workdir/ref/$genome_name+".fasta.bwt"
+-$workdir/ref/$genome_name+".fasta.ann"
+-$workdir/ref/$genome_name+".fasta.amb"
+-$workdir/ref/$genome_name+".fasta.sa"
+-$workdir/ref/$genome_name+".*.bt2"
 
 ### quality control
 
 The script provides quality control on fastq files using trim_galore and remove
 duplicated reads using clumpify. The quality of the original and filtered
 reads are monitored by fastQC and visualized by multiQC.
-
+'''
 quality_control.py -p $full_dir/properties.txt -fq1 $full_dir/ERR2889329_1.fastq -fq2 $full_dir/ERR2889329_2.fastq -pre test -de -m $full_dir/map_hominis_genotype_A10G2.txt
-
+'''
 output files
 single_end:
 $workdir/quality/out/$prefix_$runID.fastq_trimming_report.txt
