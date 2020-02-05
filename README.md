@@ -52,32 +52,33 @@ reads are monitored by fastQC and visualized by multiQC.
 quality_control.py -p $full_dir/properties.txt -fq1 $full_dir/ERR2889329_1.fastq -fq2 $full_dir/ERR2889329_2.fastq -pre test -de -m $full_dir/map_hominis_genotype_A10G2.txt
 ```
 output files
-single_end:
-$workdir/quality/out/$prefix_$runID.fastq_trimming_report.txt
-$workdir/quality/out/$prefix_$runID_trimmed.fq
-paired_end:
-$workdir/quality/out/$prefix_$runID_1or2.fastq_trimming_report.txt
-$workdir/quality/out/$prefix_$runID_1or2_val_1or2.fq
+ - $workdir/quality/qc/$prefix/($sample_name_)$runID+"*_fastqc.html"
+ - $workdir/quality/qc/$prefix/($sample_name_)$runID+"*_fastqc.zip"
+ - $workdir/quality/qc/$prefix/($sample_name_)$runID+".multiQC.html"
 
-$workdir/quality/qc/$prefix/($sample_name_)$runID+"*_fastqc.html"
-$workdir/quality/qc/$prefix/($sample_name_)$runID+"*_fastqc.zip"
-$workdir/quality/qc/$prefix/($sample_name_)$runID+".multiQC.html"
+single_end:
+ - $workdir/quality/out/$prefix_$runID.fastq_trimming_report.txt
+ - $workdir/quality/out/$prefix_$runID_trimmed.fq
+
+paired_end:
+ - $workdir/quality/out/$prefix_$runID_1or2.fastq_trimming_report.txt
+ - $workdir/quality/out/$prefix_$runID_1or2_val_1or2.fq
 
 ### assembly
 
 The script assembles short reads by using spades and provides statistics summary
 based on the result assemblies by using QUAST, and visualized by multiQC.
-
+```
 assembly.py -p $full_dir/properties.txt -g cryptosporidium_hominis -fq1 $full_dir/ERR2889329_1.fastq -fq2 $full_dir/ERR2889329_2.fastq -pre test -m $full_dir/map_hominis_genotype_A10G2.txt
-
+```
 output files:
-$workdir/assembly/out/$prefix_($smple_name_)$runID+"_scaffolds.fasta"
-$workdir/assembly/out/$prefix_($smple_name_)$runID+"_spades.log"
-$workdir/assembly/qc/$prefix/report.txt
-$workdir/assembly/qc/$prefix/report.tsv
-$workdir/assembly/qc/$prefix/report.pdf
-$workdir/assembly/qc/$prefix/report.html
-$workdir/assembly/qc/$prefix/($sample_name_)$runID.multiQC.html
+ - $workdir/assembly/out/$prefix_($smple_name_)$runID+"_scaffolds.fasta"
+ - $workdir/assembly/out/$prefix_($smple_name_)$runID+"_spades.log"
+ - $workdir/assembly/qc/$prefix/report.txt
+ - $workdir/assembly/qc/$prefix/report.tsv
+ - $workdir/assembly/qc/$prefix/report.pdf
+ - $workdir/assembly/qc/$prefix/report.html
+ - $workdir/assembly/qc/$prefix/($sample_name_)$runID.multiQC.html
 
 ### reference mapping
 
@@ -85,35 +86,36 @@ The script mapping short reads to reference genomes using BWA or bowtie2, and cr
 statistics summary files using fastQC, qualiMap, and multiQC
 
 reference mapping by using bwa:
-
+```
 reference-mapping_27Aug19.py -p $full_dir/properties.txt -t bwa -g cryptosporidium_hominis -fq1 $full_dir/ERR2889329_1_val_1.fq -fq2 $full_dir/ERR2889329_2_val_2.fq -pre xin_test_bwa_pair_ERR970586_trimmed -de -f illumina -l hominis
-
+```
 reference mapping by using bowtie2:
-
+```
 reference-mapping.py -p $full_dir/properties.txt -t bowtie2 -g cryptosporidium_hominis -fq1 $full_dir/ERR2889329_1_val_1.fq -fq2 $full_dir/ERR2889329_2_val_2.fq -pre test24Sep19 -f illumina -l hominis -m $full_dir/map_hominis_genotype_A10G2.txt
+```
 reference mapping by using bowtie2 for recombination
-
+```
 reference-mapping.py -p $full_dir/properties.txt -t bowtie2 -g cryptosporidium_hominis -fq1 $full_dir/ERR2889329_1_val_1.fq -fq2 $full_dir/ERR2889329_2_val_2.fq -pre test24Sep19 -f illumina -l hominis -m $full_dir/map_hominis_genotype_A10G2.txt -recom
-
+```
 output files:
-$workdir/reference_mapping/out/$prefix_($sample_name_)$runID_*.bam
-$workdir/reference_mapping/qc/$prefix_($sample_name_)$runID_fastqc.zip
-$workdir/reference_mapping/qc/$prefix_($sample_name_)$runID_fastqc.html
-$workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.log
-$workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.multiQC.html
+ - $workdir/reference_mapping/out/$prefix_($sample_name_)$runID_*.bam
+ - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID_fastqc.zip
+ - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID_fastqc.html
+ - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.log
+ - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.multiQC.html
 
 ### variation (snp and indel) call by using GATK:
 
 The script creates filtered or unfiltered SNP and INDEL vcf and gvcf files
 from bam files using gatk, and then creates statistics summary by using
 bcf_tools and multiQC
-
+```
 variation_gatk.py -p $full_dir/properties.txt -g cryptosporidium_hominis -bam $full_dir/ERR2889329.dedup.bam -f -pre test -m $full_dir/map_hominis_genotype_A10G2.txt
-
+```
 output files
-$workdir/snp/out/$prefix_($sample_name_)$runID*.vcf
-$workdir/snp/qc/$prefix/($sample_name_)$runID+".bcf_stats"
-$workdir/snp/qc/$prefix/($sample_name_)$runID+".multiQC.html"
+ - $workdir/snp/out/$prefix_($sample_name_)$runID*.vcf
+ - $workdir/snp/qc/$prefix/($sample_name_)$runID+".bcf_stats"
+ - $workdir/snp/qc/$prefix/($sample_name_)$runID+".multiQC.html"
 
 After all above commands are run sequencially for each isolate, the following advanced analysis can be run on all isolates independently.
 
@@ -122,62 +124,62 @@ After all above commands are run sequencially for each isolate, the following ad
 The script invests genes under selection pressure within species through dNdS. It
 creates variation annotation file for each vcf file, and gene variation
 annotation summary file based on all vcf files by using snpEff.
-
+```
 dNdS_within_species.py -p /$full_dir/properties.txt -g 'cryptosporidium_hominis' -vp '$full_dir/*.snp.vcf' -go $full_dir/hominis_go_26Jul2019.csv -m $full_dir/map_hominis_genotype_A10G2.txt -pre 28Iso
-
+```
 output files:
-$workdir/dNdS/out/$prefix + "_gene_matrix.csv"
-$workdir/dNdS/out/$prefix + "_gene_summary.csv"
-$workdir/dNdS/out/$prefix + "_posi.csv"
-$workdir/dNdS/qc/$prefix/$runID or $sample_$runID
+ - $workdir/dNdS/out/$prefix + "_gene_matrix.csv"
+ - $workdir/dNdS/out/$prefix + "_gene_summary.csv"
+ - $workdir/dNdS/out/$prefix + "_posi.csv"
+ - $workdir/dNdS/qc/$prefix/$runID or $sample_$runID
 
 ### short repeats variation analysis
 
 The script creates the genome Short Tandem Repeat (STR) variation summary file
 based on all vcf files and creates multiple alignment files for all repeat regions.
-
+```
 get_repeat_variations.py -p $full_dir/properties.txt -g cryptosporidium_hominis -vp '$full_dir/*.vcf' -pre 28Iso -m $full_dir/map_hominis_genotype_A10G2.txt
-
+```
 output files
-$workdir/repeats/out/$prefix+".summary"
-$workdir/repeats/out/multi_align/*clustalo_num
+ - $workdir/repeats/out/$prefix+".summary"
+ - $workdir/repeats/out/multi_align/*clustalo_num
 
 ### multiple alignment for all individual chromosomes
 
 The script creates all individual chromosome multiple alignment for recombination.
-
+```
 build_chr_multiAlign_for_recombi.py -p $full_dir/properties.txt -g cryptosporidium_hominis -bp '$full_dir/*.bam' -pre forSimone -m $full_dir/map_hominis_genotype_A10G2.txt
-
+```
 output files:
-$workdir/recombination/out/$prefix_$chromosome+".xmfa"
+ - $workdir/recombination/out/$prefix_$chromosome+".xmfa"
 
 ### variation visualization
 
 a) prepare gvcf files for creating image:
 
 The script merges gvcf files, seperating the variations into SNP and INDEL,and then do filtering if requested.
-
+```
 variation_gatk_gvcf.py -p $full_dir/properties.txt -g cryptosporidium_hominis -gv '$full_dir/*.snps.indels.g.vcf' -f -pre 28Iso
-
+```
 b) Create images
 
 The script creates the following images: phylogeny tree, PCA, heatmap, upset, and SNP
 distribution on chromosome for vcf files
-
+```
 create_all_images.py -p /$full_dir/properties.txt -g cryptosporidium_hominis -v '$full_dir/*.snp.vcf' -gv '$full_dir/*.snp.g.vcf' -gt $full_dir/28Iso_map_for_visua.txt -pre 28Iso
-
+```
 output files:
-$workdir/visualization/out/$prefix+"_phylo_PCA_upset_heatmap.pdf"
-$workdir/visualization/out/$prefix+"snp_dist_on"$chromosome".pdf"
+ - $workdir/visualization/out/$prefix+"_phylo_PCA_upset_heatmap.pdf"
+ - $workdir/visualization/out/$prefix+"snp_dist_on"$chromosome".pdf"
 
 ### multiQC 
 
 The script creates multiQC html file based on fastqc, bcftools, snpEff, QUAST, and
 QualiMap output files. This script can only be run after the all isolate genomes go through commands 1-6.
-
+```
 multiQC.py -p $full_dir/properties.txt -pre test
-
+```
 output files:
-$workdir/qc_report/out/$prefix+".multiQC.html"
+ - $workdir/qc_report/out/$prefix+".multiQC.html"
 
 
