@@ -3,16 +3,17 @@
 
 #### General introduction of how to use the Crypto analysis pipeline
 
-In crypto genome analysis, the first command "download" prepares the reference file, so need to be run firstly. After that, you can start to the basis analsis (command 2-5) for each individual isolate genome. We recommend you always run command 2 "quality control" as the first step. Command 3 "assembly" is a relatively independent step, while command 2,4,5 need to be run sequentially. After all the isolate genomes go through basis analysis individually, they will be ready for the independent advanced analysis (command 6-10) as a whole. 
+In crypto genome analysis pipeline, the first command "download" prepares the reference file, so need to be run firstly. After that, you can start the basis analsis (command 2-5) for each individual isolate genome. We recommend you always run command 2 "quality control" as the first step of the basic analysis. Command 3 "assembly" is a relatively independent step, while command 2,4,5 need to be run sequentially. After all the isolate genomes go through basis analysis individually, they will be ready for the independent advanced analysis (command 6-10) as a whole. 
 
 #### File examples
 
 1. The input fastq files can be found in https://www.ebi.ac.uk/ena/data/view/PRJEB15112.
-2. In github, you can find the example of the following files: 
+2. In github, you can find the example of the following requested files for the pipeline. You may not need all of them, depending on which analysis will be chosen.
  - properties.txt
  - map_hominis_genotype_A10G2.txt
  - 28Iso_map_for_visua.txt
  - hominis_go_26Jul2019.csv
+ - genome_list.txt
 
 #### Commands
 1. [download](#download)
