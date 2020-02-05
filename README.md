@@ -7,8 +7,8 @@ In crypto genome analysis, the first command "download" prepares the reference f
 
 #### File examples
 
-The input fastq files can be found in https://www.ebi.ac.uk/ena/data/view/PRJEB15112.
-In github, you can find the example of the following files: 
+1. The input fastq files can be found in https://www.ebi.ac.uk/ena/data/view/PRJEB15112.
+2. In github, you can find the example of the following files: 
  - properties.txt
  - map_hominis_genotype_A10G2.txt
  - 28Iso_map_for_visua.txt
@@ -16,14 +16,14 @@ In github, you can find the example of the following files:
 
 #### Commands
 1. [download](#download)
-2. [QC](#quality control)
+2. [quality control](#quality_control)
 3. [assembly](#assembly)
-4. [mapping](#reference mapping)
-5. [variation](#variation (snp and indel))
-6. [dNdS](#dNdS analysis)
-7. [repeats](#short repeats variation analysis)
-8. [mAlignment](#multiple alignment for all individual chromosomes) 
-9. [visualization](#variation visualization)
+4. [reference mapping](#reference_mapping)
+5. [variation](#variation_(snp_and_indel))
+6. [dNdS analysis](#dNdS_analysis)
+7. [short repeats variation analysis](#short_repeats_variation_analysis)
+8. [multiple alignment](#multiple_alignment_for_all_individual_chromosomes) 
+9. [variation visualization](#variation_visualization)
 10. [multiQC](#multiQC)               
 
 ### download 
@@ -43,7 +43,7 @@ output files:
  - $workdir/ref/$genome_name+".fasta.sa"
  - $workdir/ref/$genome_name+".*.bt2"
 
-### quality control
+### quality_control
 
 The script provides quality control on fastq files using trim_galore and remove
 duplicated reads using clumpify. The quality of the original and filtered
@@ -80,7 +80,7 @@ output files:
  - $workdir/assembly/qc/$prefix/report.html
  - $workdir/assembly/qc/$prefix/($sample_name_)$runID.multiQC.html
 
-### reference mapping
+### reference_mapping
 
 The script mapping short reads to reference genomes using BWA or bowtie2, and creates 
 statistics summary files using fastQC, qualiMap, and multiQC
@@ -104,7 +104,7 @@ output files:
  - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.log
  - $workdir/reference_mapping/qc/$prefix_($sample_name_)$runID.multiQC.html
 
-### variation (snp and indel)
+### variation_(snp_and_indel)
 
 The script creates filtered or unfiltered SNP and INDEL vcf and gvcf files
 from bam files using gatk, and then creates statistics summary by using
@@ -119,7 +119,7 @@ output files
 
 After all above commands are run sequencially for each isolate, the following advanced analysis can be run on all isolates independently.
 
-### dNdS analysis
+### dNdS_analysis
 
 The script invests genes under selection pressure within species through dNdS. It
 creates variation annotation file for each vcf file, and gene variation
@@ -133,7 +133,7 @@ output files:
  - $workdir/dNdS/out/$prefix + "_posi.csv"
  - $workdir/dNdS/qc/$prefix/$runID or $sample_$runID
 
-### short repeats variation analysis
+### short_repeats_variation_analysis
 
 The script creates the genome Short Tandem Repeat (STR) variation summary file
 based on all vcf files and creates multiple alignment files for all repeat regions.
@@ -144,7 +144,7 @@ output files
  - $workdir/repeats/out/$prefix+".summary"
  - $workdir/repeats/out/multi_align/*clustalo_num
 
-### multiple alignment for all individual chromosomes
+### multiple_alignment_for_all_individual_chromosomes
 
 The script creates all individual chromosome multiple alignment for recombination.
 ```
@@ -153,7 +153,7 @@ build_chr_multiAlign_for_recombi.py -p $full_dir/properties.txt -g cryptosporidi
 output files:
  - $workdir/recombination/out/$prefix_$chromosome+".xmfa"
 
-### variation visualization
+### variation_visualization
 
 a) prepare gvcf files for creating image:
 
