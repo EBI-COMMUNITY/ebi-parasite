@@ -19,15 +19,14 @@ def get_args():
     global genome_name
     global prefix
     global vcf_file_pattern
+    global go_file
     global mapping_file
     global prop
-    global var_type
-    global if_indel
 
     # Assign description to the help doc
     parser = argparse.ArgumentParser(description='''Script invests genes under selection pressure within 
                                                     species through dNdS. It creates variation annotation 
-                                                    file for each vcf file, and gene variation annotation 
+                                                    file for each SNP vcf file, and gene variation annotation 
                                                     summary file based on all vcf files by using snpEff''')
     parser.add_argument('-p', '--properties_file', type=str, help='Please provide the properties file.', 
                         required=True)
@@ -35,8 +34,8 @@ def get_args():
                         required=True) 
     parser.add_argument('-vp', '--vcf_file_pattern', type=str, help="Please provide snp vcf files' pattern with full file path", 
                         required=True) 
-    parser.add_argument('-t', '--var_type', type=str, help="Please provide var_type, SNP or INDEL only",
-                        required=True)   
+    parser.add_argument('-go', '--go_file', type=str, help="Please provide the full path of the gene ontology file",
+                        required=True)
     parser.add_argument('-m', '--mapping_file', type=str, help='''Please provide the mapping file path, which contains one column of 
                                                                 read_ID from vcf file and one column of its corresponding sample_name''', 
                         required=False)
@@ -52,21 +51,17 @@ def get_args():
         MISC.my_exit("{} is not available, please try another genome".format(args.genome_name))     
     if not re.search(".vcf$",args.vcf_file_pattern):
         MISC.my_exit("vcf_file_pattern need to end up with .vcf")
-    if args.var_type!="SNP" and args.var_type!="INDEL":
-        MISC.my_exit("var_type must be SNP or INDEL")
+    FI.check_exist(args.go_file)
+    go_file=args.go_file
     genome_name=args.genome_name
     vcf_file_pattern=args.vcf_file_pattern
-    var_type=args.var_type
-    if_indel=0
-    if var_type=="INDEL":
-        if_indel=1
     prefix=args.prefix   
     mapping_file=args.mapping_file
     
     print ("properties_file:",properties_file)
     print ("genome_name:",genome_name)
     print ("vcf_file_pattern:",vcf_file_pattern)
-    print ("var_type:",var_type)
+    print ("go_file:",go_file)
     print ("mapping_file:",mapping_file)
     print ("prefix:",prefix)
    
@@ -74,9 +69,7 @@ def get_go():
     global go_col_names;
     global go_dict;
     go_dict={}
-    '''https://cryptodb.org/cryptodb/showQuestion.do?questionFullName=GeneQuestions.GeneByLocusTag 
-       upload a text file with all gene list from gff3'''
-    fhin=open("/hps/nobackup/nucleotide/xin/parasite/working_dir/simone/ref/hominis_go_26Jul2019.csv",'r')
+    fhin=open(go_file,'r')
     lines=fhin.readlines()
     go_col_names_ori = lines[0].rstrip().split(",")[2:]
     go_col_names = []
@@ -358,11 +351,7 @@ def write_posi_file():
     fhout.write("{}\t{}\t{}\t{}\t{}\t".format("gene","chro","posi","isolates_ref_base","isolate_name_ref_base"))
     for i in range(0,max_alt_num):
         fhout.write("{}\t{}\t".format("isolates_alt_base","isolate_name"))
-        if if_indel:
-            fhout.write("multiple_3_indel\t")
     fhout.write("{}\t{}\t{}".format("singleton","var_type","gene_length"))
-    if if_indel:
-        fhout.write("\teffect_entire_coden")
     fhout.write("\n")
     for gene in sorted(posi_snp_hash.keys()):
         if gene in genome_gene_dict.keys():
@@ -391,27 +380,15 @@ def write_posi_file():
                                      sample_names_str=sample_names_str+","+sample_name
                                  sample_names_str=sample_names_str[1:]
                                  alt_str=alt_str+"{}_{}\t{}\t".format(str(sample_num_alt),alt,sample_names_str)
-                                 if if_indel:
-                                     if_multi3='N'
-                                     if (len(alt)-len(ref_base))%3==0:
-                                         if_multi3='Y'
-                                     alt_str=alt_str+if_multi3+" "+get_alt_ref_diff(ref_base,alt)+"\t"
                             if per_var_sample_num<sample_num and per_var_sample_num>0:
                                 (ref_base_isolate_num,ref_base_isolates_str)=get_ref_base_isolates(alt_samples)
                                 alt_num_diff=max_alt_num-alt_num
                                 for i in range(0,alt_num_diff):
                                     alt_str=alt_str+"N/A\tN/A\t"
-                                    if if_indel:
-                                        alt_str=alt_str+"N/A\t"
                                 alt_str=alt_str.rstrip()
                                 fhout.write("{}\t{}\t{}\t".format(gene,chro,posi))
                                 fhout.write("{}_{}\t{}\t{}\t".format(ref_base_isolate_num,ref_base,ref_base_isolates_str,alt_str))
                                 fhout.write("{}\t{}\t{}".format(singleton,dNordS,genome_gene_dict[gene][3])) #gene_len
-                                if if_indel:
-                                    if re.search("conservative_inframe",variant):
-                                        fhout.write("\tY")
-                                    else:
-                                        fhout.write("\tN")
                                 fhout.write("\n")
     fhout.close()
     print ("sample number="+str(sample_num))
